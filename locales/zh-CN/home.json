@@ -272,7 +272,7 @@
     "modal": {
       "add_friend": "申请加好友"
     },
-    "developer_badge": "HuLa开发工程师"
+    "developer_badge": "THOIFR开发工程师"
   },
   "profile_edit": {
     "title": "编辑资料",
@@ -323,7 +323,7 @@
   "about": {
     "version": "版本：{version} ({arch})",
     "device": "当前设备：{type}{version}",
-    "copyright": "Copyright © {start}-{end} HuLaSpark",
+    "copyright": "Copyright © {start}-{end} THOIFR",
     "rights": "All Rights Reserved."
   },
   "apply_list": {

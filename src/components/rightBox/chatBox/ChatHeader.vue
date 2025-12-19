@@ -239,7 +239,7 @@
                   </n-flex>
 
                   <n-flex align="center" :size="8">
-                    <!-- hula号 -->
+                    <!-- THOIFR号 -->
                     <p
                       class="text-(12px center [--chat-text-color]) rounded-4px w-100px py-2px bg-[#e3e3e3] dark:bg-[#505050]">
                       {{ activeItem?.account }}

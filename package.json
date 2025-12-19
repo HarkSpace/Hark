@@ -12,8 +12,8 @@
     "url": "https://github.com/HuLaSpark/HuLa.git"
   },
   "author": {
-    "name": "HuLaSpark团队",
-    "email": "2439646234@qq.com",
+    "name": "THOIFR团队",
+    "email": "1906216170@qq.com",
     "url": "https://github.com/HuLaSpark"
   },
   "scripts": {
@@ -21,9 +21,9 @@
     "dev": "vite",
     "========= 打包vue(tauri项目会连带执行不需要单独执行) =========": "",
     "build": "vue-tsc --noEmit && vite build",
-    "========= 启动HuLa桌面应用程序 =========": "",
+    "========= 启动THOIFR桌面应用程序 =========": "",
     "tauri:dev": "tauri dev",
-    "========= 启动HuLa桌面应用程序(简化命令) =========": "",
+    "========= 启动THOIFR桌面应用程序(简化命令) =========": "",
     "td": "tauri dev",
     "========= windows中启动安卓纯前端(简化命令) =========": "",
     "adev:win": "set TAURI_ENV_PLATFORM=android&& vite",

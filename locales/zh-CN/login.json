@@ -112,7 +112,7 @@
       "suffix": "后缀"
     },
     "placeholder": {
-      "host": "127.0.0.1或THOIFRspark.com",
+      "host": "127.0.0.1",
       "port": "443",
       "api_suffix": "api",
       "ws_suffix": "websocket"

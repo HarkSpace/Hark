@@ -141,7 +141,7 @@ const doSearch = () => {
 const filteredContacts = computed(() => {
   const contactsList = contactStore.contactsList.filter((c) => {
     if (c.uid === '1') {
-      // 排除hula小管家
+      // 排除 THOIFR小管家
       return false
     }
     return true

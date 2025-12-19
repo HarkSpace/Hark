@@ -124,7 +124,7 @@
                 style="border-bottom: 1px solid; border-color: #ebebeb"
                 @click="handleCopy(activeItem?.account || '')"
                 class="flex justify-between py-15px items-center">
-                <div class="text-14px">{{ isGroup ? '群号/二维码' : 'Hula号/二维码' }}</div>
+                <div class="text-14px">{{ isGroup ? '群号/二维码' : 'THOIFR号/二维码' }}</div>
                 <div class="text-12px text-#6E6E6E flex flex-wrap gap-10px items-center">
                   <div>{{ activeItem?.account || '' }}</div>
                   <div>

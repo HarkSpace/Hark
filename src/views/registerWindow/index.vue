@@ -165,7 +165,7 @@
       class="text-(12px #909090) w-full absolute bottom-20px left-1/2 transform -translate-x-1/2"
       :size="8"
       justify="center">
-      <span>Copyright {{ currentYear - 1 }}-{{ currentYear }} HuLaSpark All Rights Reserved.</span>
+      <span>Copyright {{ currentYear - 1 }}-{{ currentYear }} THOIFR All Rights Reserved.</span>
     </n-flex>
 
     <!-- 星标提示框 -->

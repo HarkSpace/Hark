@@ -228,7 +228,7 @@ function main() {
 
   // 在 Windows 上执行额外检查
   if (isWindows) {
-    console.log(chalk.blue(`\n[HuLa ${new Date().toLocaleTimeString()}] 正在检查 Windows 开发环境...\n`))
+    console.log(chalk.blue(`\n[THOIFR ${new Date().toLocaleTimeString()}] 正在检查 Windows 开发环境...\n`))
     const windowsResults = windowsChecks.map(checkWindowsDependency)
     results.push(...windowsResults)
   }

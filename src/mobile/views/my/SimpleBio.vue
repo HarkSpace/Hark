@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-1">
-    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% absolute top-0 z-0" alt="hula" />
+    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% absolute top-0 z-0" alt="THOIFR" />
     <AutoFixHeightPage :show-footer="false" class="z-1">
       <template #container>
         <div class="z-2 flex flex-col gap-1 overflow-auto h-full">

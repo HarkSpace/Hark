@@ -51,7 +51,7 @@
           autoCapitalize="off"
           :placeholder="accountPH"
           @focus="accountPH = ''"
-          @blur="accountPH = '输入HuLa账号'"
+          @blur="accountPH = '输入THOIFR账号'"
           clearable>
           <template #suffix>
             <n-flex v-if="loginHistories.length > 0" @click="arrowStatus = !arrowStatus">
@@ -98,7 +98,7 @@
           autoCapitalize="off"
           :placeholder="passwordPH"
           @focus="passwordPH = ''"
-          @blur="passwordPH = '输入HuLa密码'"
+          @blur="passwordPH = '输入THOIFR密码'"
           clearable />
 
         <n-flex justify="flex-end" :size="6">
@@ -122,7 +122,7 @@
             <span>已阅读并同意</span>
             <span @click.stop="toServiceAgreement" class="color-#13987f cursor-pointer">服务协议</span>
             <span>和</span>
-            <span @click.stop="toPrivacyAgreement" class="color-#13987f cursor-pointer">HuLa隐私保护指引</span>
+            <span @click.stop="toPrivacyAgreement" class="color-#13987f cursor-pointer">隐私保护指引</span>
           </div>
         </n-flex>
       </n-flex>
@@ -142,7 +142,7 @@
           :allow-input="noSideSpace"
           :placeholder="registerNamePH"
           @focus="registerNamePH = ''"
-          @blur="registerNamePH = '输入HuLa昵称'"
+          @blur="registerNamePH = '输入THOIFR昵称'"
           clearable />
 
         <n-input
@@ -193,7 +193,7 @@
             <span>已阅读并同意</span>
             <span @click.stop="toServiceAgreement" class="color-#13987f cursor-pointer">服务协议</span>
             <span>和</span>
-            <span @click.stop="toPrivacyAgreement" class="color-#13987f cursor-pointer">HuLa隐私保护指引</span>
+            <span @click.stop="toPrivacyAgreement" class="color-#13987f cursor-pointer">隐私保护指引</span>
           </div>
         </n-flex>
 
@@ -313,13 +313,13 @@ const registerInfo = ref<LocalRegisterInfo>({
 })
 
 // 登录相关的占位符和状态
-const accountPH = ref('输入HuLa账号')
-const passwordPH = ref('输入HuLa密码')
+const accountPH = ref('输入THOIFR账号')
+const passwordPH = ref('输入THOIFR密码')
 const protocol = ref(true)
 const arrowStatus = ref(false)
 
 // 注册相关的占位符和状态
-const registerNamePH = ref('输入HuLa昵称')
+const registerNamePH = ref('输入THOIFR昵称')
 const registerEmailPH = ref('输入邮箱')
 const registerPasswordPH = ref('设置密码')
 const confirmPasswordPH = ref('确认密码')
@@ -485,8 +485,8 @@ const resetLoginForm = () => {
     uid: '',
     name: ''
   }
-  accountPH.value = '输入HuLa账号'
-  passwordPH.value = '输入HuLa密码'
+  accountPH.value = '输入THOIFR账号'
+  passwordPH.value = '输入THOIFR密码'
   arrowStatus.value = false
 }
 
@@ -504,7 +504,7 @@ const resetRegisterForm = () => {
     key: 'REGISTER_EMAIL'
   } as LocalRegisterInfo
   currentStep.value = 1
-  registerNamePH.value = '输入HuLa昵称'
+  registerNamePH.value = '输入THOIFR昵称'
   registerEmailPH.value = '输入邮箱'
   registerPasswordPH.value = '设置密码'
   confirmPasswordPH.value = '确认密码'

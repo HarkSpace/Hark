@@ -69,7 +69,7 @@
 
     <div class="bot-content">
       <n-loading-bar-provider ref="loadingBarRef" :to="false" :container-style="loadingBarContainerStyle">
-        <!-- HuLa 小管家 3D 模型 -->
+        <!-- THOIFR 小管家 3D 模型 -->
         <HuLaAssistant
           v-if="isAssistantView"
           :active="isAssistantView"
@@ -340,7 +340,7 @@ const handleAssistantReady = () => {
 }
 
 const handleAssistantError = async (error: unknown) => {
-  console.error('加载 HuLa 小管家失败:', error)
+  console.error('加载 THOIFR 小管家失败:', error)
   customModelPath.value = null
   selectedModelKey.value = null
   applyFirstPreset({ force: true })
