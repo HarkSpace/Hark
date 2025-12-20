@@ -9,6 +9,7 @@ import { ErrorType } from '@/common/exception'
 import { MittEnum, type MessageStatusEnum, MsgEnum, RoomTypeEnum, StoresEnum, TauriCommand } from '@/enums'
 import type { MarkItemType, MessageType, RevokedMsgType, SessionItem } from '@/services/types'
 import { useGlobalStore } from '@/stores/global.ts'
+import { useFeedStore } from '@/stores/feed.ts'
 import { useGroupStore } from '@/stores/group.ts'
 import { useUserStore } from '@/stores/user.ts'
 import { getSessionDetail, markMsgRead } from '@/utils/ImRequestUtils'
@@ -28,13 +29,11 @@ type RecalledMessage = {
 // 定义每页加载的消息数量
 export const pageSize = 20
 
+// 单个会话在内存中的消息保留上限，防止后台会话无限增长
+const ROOM_MESSAGE_CACHE_LIMIT = 40
+
 // 撤回消息的过期时间
 const RECALL_EXPIRATION_TIME = 2 * 60 * 1000 // 2分钟，单位毫秒
-
-// // 定义消息数量阈值
-// const MESSAGE_THRESHOLD = 120
-// // 定义保留的最新消息数量
-// const KEEP_MESSAGE_COUNT = 60
 
 // 创建src/workers/timer.worker.ts
 const timerWorker = new Worker(new URL('../workers/timer.worker.ts', import.meta.url))
@@ -50,6 +49,7 @@ export const useChatStore = defineStore(
     const route = useRoute()
     const userStore = useUserStore()
     const globalStore = useGlobalStore()
+    const feedStore = useFeedStore()
     const groupStore = useGroupStore()
     const sessionUnreadStore = useSessionUnreadStore()
 
@@ -274,6 +274,22 @@ export const useChatStore = defineStore(
     })
 
     /**
+     * 清理非当前房间的消息缓存
+     * @description 切换房间时调用，释放内存，只保留当前房间的消息
+     * 注意：只清空消息内容，不删除 key，避免影响响应式依赖
+     */
+    const clearOtherRoomsMessages = (currentRoomId: string) => {
+      for (const roomId in messageMap) {
+        if (roomId !== currentRoomId) {
+          // 只清空消息内容，保留响应式对象结构
+          for (const msgId in messageMap[roomId]) {
+            delete messageMap[roomId][msgId]
+          }
+        }
+      }
+    }
+
+    /**
      * 切换聊天室
      * @description
      * 当用户切换到不同的聊天室时调用此方法，执行完整的房间切换流程。
@@ -291,6 +307,12 @@ export const useChatStore = defineStore(
       }
 
       const roomId = globalStore.currentSessionRoomId
+
+      // 清理其他房间的消息缓存，释放内存
+      clearOtherRoomsMessages(roomId)
+
+      // 清理过期的撤回消息缓存
+      cleanupExpiredRecalledMessages()
 
       // 1. 清空当前房间的旧消息数据
       if (messageMap[roomId]) {
@@ -472,7 +494,7 @@ export const useChatStore = defineStore(
         // 避免显示上次会话的陈旧未读，在同步期间先清零消息未读，待拉取完成后再计算
         globalStore.unreadReady = false
         globalStore.unReadMark.newMsgUnreadCount = 0
-        unreadCountManager.refreshBadge(globalStore.unReadMark)
+        unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
         const prevSessions =
           sessionList.value.length > 0
             ? sessionList.value.reduce(
@@ -490,7 +512,12 @@ export const useChatStore = defineStore(
           sessionOptions.isLoading = false
           return null
         })
-        if (!data) return
+        if (!data) {
+          // 拉取失败也要恢复未读角标的展示，避免 unreadReady 卡在 false
+          globalStore.unreadReady = true
+          unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
+          return
+        }
 
         // console.log(
         //   '[SessionDebug] 后端返回的会话列表:',
@@ -518,25 +545,28 @@ export const useChatStore = defineStore(
         await clearCurrentSessionUnread()
         updateTotalUnreadCount()
         // 如果当前会话仍被服务器标记为未读，主动上报并清零，避免气泡卡住
-        if (globalStore.currentSessionRoomId) {
-          const currentSession = resolveSessionByRoomId(globalStore.currentSessionRoomId)
+        const currentRoomId = globalStore.currentSessionRoomId
+        if (currentRoomId) {
+          const currentSession = resolveSessionByRoomId(currentRoomId)
           if (currentSession?.unreadCount) {
             try {
-              await markMsgRead(currentSession.roomId)
+              await markMsgRead(currentRoomId)
             } catch (error) {
               console.error('[chat] 会话列表同步后上报已读失败:', error)
             }
-            markSessionRead(currentSession.roomId)
+            markSessionRead(currentRoomId)
+            // 清除当前会话未读后，需要重新计算总未读数，确保程序坞图标正确更新
+            updateTotalUnreadCount()
           }
         }
         globalStore.unreadReady = true
-        unreadCountManager.refreshBadge(globalStore.unReadMark)
+        unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
       } catch (e) {
         console.error('获取会话列表失败11:', e)
         sessionOptions.isLoading = false
         // 出错时也恢复未读展示，避免角标长时间隐藏
         globalStore.unreadReady = true
-        unreadCountManager.refreshBadge(globalStore.unReadMark)
+        unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
       } finally {
         sessionOptions.isLoading = false
       }
@@ -563,12 +593,15 @@ export const useChatStore = defineStore(
         const index = sessionList.value.findIndex((s) => s.roomId === roomId)
         if (index !== -1) {
           sessionList.value[index] = updatedSession
+        } else {
+          console.warn('[updateSession] 会话不在 sessionList 中:', roomId)
         }
 
         // 同步更新 sessionMap
         sessionMap.value[roomId] = updatedSession
 
         if ('unreadCount' in data && typeof updatedSession.unreadCount === 'number') {
+          console.log('[updateSession] 更新未读数:', roomId, updatedSession.unreadCount)
           persistUnreadCount(roomId, updatedSession.unreadCount)
           requestUnreadCountUpdate(roomId)
         }
@@ -577,6 +610,8 @@ export const useChatStore = defineStore(
         if ('muteNotification' in data) {
           requestUnreadCountUpdate()
         }
+      } else {
+        console.warn('[updateSession] 会话不存在:', roomId)
       }
     }
 
@@ -645,7 +680,7 @@ export const useChatStore = defineStore(
       const cacheUser = groupStore.getUserInfo(uid)
 
       // 更新会话的文本属性和未读数
-      const session = updateSessionLastActiveTime(msg.message.roomId)
+      const session = resolveSessionByRoomId(msg.message.roomId)
       if (session) {
         const lastMsgUserName = cacheUser?.name
         const formattedText =
@@ -661,15 +696,38 @@ export const useChatStore = defineStore(
                 msg.message.body?.content || msg.message.body,
                 session.type
               )
-        session.text = formattedText!
-        // 更新未读数
-        if (msg.fromUser.uid !== userStore.userInfo!.uid) {
-          if (!isActiveChatView || msg.message.roomId !== targetRoomId) {
-            session.unreadCount = (session.unreadCount || 0) + 1
-            persistUnreadCount(session.roomId, session.unreadCount)
-            // 使用防抖机制更新，适合并发消息场景
-            requestUnreadCountUpdate()
-          }
+
+        // 收集需要更新的属性
+        const updateData: Partial<SessionItem> = {
+          text: formattedText!,
+          activeTime: Date.now()
+        }
+
+        // 更新未读数：只有非自己发的消息，且不在当前活跃会话视图中时才增加
+        const isSelfMessage = msg.fromUser.uid === userStore.userInfo!.uid
+        const shouldIncreaseUnread = !isSelfMessage && (!isActiveChatView || msg.message.roomId !== targetRoomId)
+
+        if (shouldIncreaseUnread) {
+          updateData.unreadCount = (session.unreadCount || 0) + 1
+          console.log('[pushMsg] 增加未读数:', msg.message.roomId, updateData.unreadCount, {
+            isActiveChatView,
+            targetRoomId,
+            msgRoomId: msg.message.roomId,
+            isSelfMessage
+          })
+        }
+
+        // 使用 updateSession 统一更新，确保响应式正确触发
+        updateSession(msg.message.roomId, updateData)
+      } else {
+        // 会话不存在，添加新会话
+        await addSession(msg.message.roomId)
+        // 新会话添加后，如果不是自己发的消息且不在当前活跃视图，需要设置未读数
+        const isSelfMessage = msg.fromUser.uid === userStore.userInfo!.uid
+        const shouldIncreaseUnread = !isSelfMessage && (!isActiveChatView || msg.message.roomId !== targetRoomId)
+        if (shouldIncreaseUnread) {
+          updateSession(msg.message.roomId, { unreadCount: 1 })
+          console.log('[pushMsg] 新会话增加未读数:', msg.message.roomId)
         }
       }
 
@@ -680,6 +738,11 @@ export const useChatStore = defineStore(
           body: msg.message.body.content,
           icon: cacheUser.avatar as string
         })
+      }
+
+      // 防止后台会话长期堆积消息，超出上限时做裁剪（保持当前会话完整，避免阅读中被截断）
+      if (!isActiveChatView || msg.message.roomId !== targetRoomId) {
+        clearRedundantMessages(msg.message.roomId, ROOM_MESSAGE_CACHE_LIMIT)
       }
     }
 
@@ -1000,11 +1063,17 @@ export const useChatStore = defineStore(
     // 标记已读数为 0
     const markSessionRead = (roomId: string) => {
       const session = resolveSessionByRoomId(roomId)
-      if (!session) return
+      if (!session) {
+        console.log('[markSessionRead] 会话不存在:', roomId)
+        return
+      }
       if (session.unreadCount === 0) {
+        console.log('[markSessionRead] 未读数已为0，跳过:', roomId)
         requestUnreadCountUpdate(roomId)
         return
       }
+
+      console.log('[markSessionRead] 清除未读数:', roomId, '当前未读数:', session.unreadCount)
 
       // 记录已读时的活跃时间，用于重登时识别陈旧未读
       const activeTime = session.activeTime || Date.now()
@@ -1081,7 +1150,7 @@ export const useChatStore = defineStore(
       timerWorker.terminate()
     }
 
-    // 清理所有定时器
+    // 清理所有定时器和撤回消息缓存
     const clearAllExpirationTimers = () => {
       for (const msgId in expirationTimers) {
         // 通知 worker 停止对应的定时器
@@ -1090,20 +1159,40 @@ export const useChatStore = defineStore(
           msgId
         })
       }
+      // 清理 expirationTimers
       for (const msgId in expirationTimers) {
         delete expirationTimers[msgId]
+      }
+      // 同时清理 recalledMessages，避免内存累积
+      for (const msgId in recalledMessages) {
+        delete recalledMessages[msgId]
+      }
+    }
+
+    // 清理过期的撤回消息（超过2分钟的）
+    const cleanupExpiredRecalledMessages = () => {
+      const now = Date.now()
+      for (const msgId in recalledMessages) {
+        const msg = recalledMessages[msgId]
+        if (now - msg.recallTime > RECALL_EXPIRATION_TIME) {
+          delete recalledMessages[msgId]
+          if (expirationTimers[msgId]) {
+            timerWorker.postMessage({ type: 'clearTimer', msgId })
+            delete expirationTimers[msgId]
+          }
+        }
       }
     }
 
     // 更新未读消息计数
     const updateTotalUnreadCount = () => {
-      // 使用统一的计数管理器
-      unreadCountManager.calculateTotal(sessionList.value, globalStore.unReadMark)
+      // 使用统一的计数管理器（包含朋友圈未读数）
+      unreadCountManager.calculateTotal(sessionList.value, globalStore.unReadMark, feedStore.unreadCount)
     }
 
     // 设置计数管理器的更新回调
     unreadCountManager.setUpdateCallback(() => {
-      unreadCountManager.calculateTotal(sessionList.value, globalStore.unReadMark)
+      unreadCountManager.calculateTotal(sessionList.value, globalStore.unReadMark, feedStore.unreadCount)
     })
 
     // 使用防抖机制的更新函数
@@ -1121,18 +1210,18 @@ export const useChatStore = defineStore(
       requestUnreadCountUpdate()
     }
 
-    const clearRedundantMessages = (roomId: string) => {
+    const clearRedundantMessages = (roomId: string, limit: number = pageSize) => {
       const currentMessages = messageMap[roomId]
       if (!currentMessages) return
 
       // 将消息转换为数组并按消息ID倒序排序，前面的元素代表最新的消息
       const sortedMessages = Object.values(currentMessages).sort((a, b) => Number(b.message.id) - Number(a.message.id))
 
-      if (sortedMessages.length <= pageSize) {
+      if (sortedMessages.length <= limit) {
         return
       }
 
-      const keptMessages = sortedMessages.slice(0, pageSize)
+      const keptMessages = sortedMessages.slice(0, limit)
       const keepMessageIds = new Set(keptMessages.map((msg) => msg.message.id))
       const fallbackCursor = keptMessages[keptMessages.length - 1]?.message.id || ''
 
@@ -1155,6 +1244,15 @@ export const useChatStore = defineStore(
           isLast: false
         }
       }
+
+      // 控制台提示裁剪信息，方便定位内存压缩触发点
+      console.info(
+        '[chat][trim]',
+        `roomId=${roomId}`,
+        `removed=${sortedMessages.length - keptMessages.length}`,
+        `kept=${keptMessages.length}`,
+        `limit=${limit}`
+      )
     }
 
     /**
@@ -1257,6 +1355,7 @@ export const useChatStore = defineStore(
       getRecalledMessage,
       recalledMessages,
       clearAllExpirationTimers,
+      cleanupExpiredRecalledMessages,
       updateTotalUnreadCount,
       requestUnreadCountUpdate,
       clearUnreadCount,

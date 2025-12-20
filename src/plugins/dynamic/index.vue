@@ -1,28 +1,33 @@
 <template>
-  <main class="size-full rounded-8px bg-#fff dark:bg-#303030">
+  <main class="size-full rounded-8px bg-#fff dark:bg-#303030" data-tauri-drag-region>
     <!-- 头像栏 -->
-    <div class="flex flex-col h-32vh relative">
-      <div class="flex h-95% w-full relative">
+    <div class="flex flex-col h-32vh relative" data-tauri-drag-region>
+      <div class="flex h-95% w-full relative" data-tauri-drag-region>
         <ActionBar
-          style="position: absolute; top: 0; left: 0; width: 100vw"
+          style="position: absolute; top: 8px; right: 16px"
           :shrink="false"
-          :max-w="false"
+          :max-w="true"
           :icon-color="'white'"
           :top-win-label="WebviewWindow.getCurrent().label"
           :current-label="WebviewWindow.getCurrent().label">
-          <div data-tauri-drag-region class="w-87% flex gap-10px items-center">
+          <div data-tauri-drag-region class="w-fit flex-center gap-16px">
             <div class="cursor-pointer ms-15px" @click="handleInfoTip">
-              <n-badge :value="unreadCount" :max="100" :show="unreadCount > 0">
-                <svg class="size-18px color-white iconpark-icon">
-                  <use href="#remind"></use>
-                </svg>
-              </n-badge>
+              <n-popover trigger="hover">
+                <template #trigger>
+                  <n-badge :value="unreadCount" :max="100" :show="unreadCount > 0">
+                    <svg class="size-17px color-white">
+                      <use href="#remind"></use>
+                    </svg>
+                  </n-badge>
+                </template>
+                <span>{{ t('dynamic.list.actions.comment_notice') }}</span>
+              </n-popover>
             </div>
 
             <div class="cursor-pointer" @click="showAddFeedModal = true">
               <n-popover trigger="hover">
                 <template #trigger>
-                  <svg class="size-24px color-white text-white iconpark-icon">
+                  <svg class="size-23px color-white text-white">
                     <use href="#plus"></use>
                   </svg>
                 </template>
@@ -33,19 +38,19 @@
             <div class="cursor-pointer" @click="handleRefresh">
               <n-popover trigger="hover">
                 <template #trigger>
-                  <svg class="size-20px color-white iconpark-icon"><use href="#refresh"></use></svg>
+                  <svg class="size-17px color-white"><use href="#refresh"></use></svg>
                 </template>
                 <span>{{ t('dynamic.list.actions.refresh') }}</span>
               </n-popover>
             </div>
           </div>
         </ActionBar>
-        <div class="size-full flex-center bg-#90909048 dark:bg-[#202020]">
+        <div data-tauri-drag-region class="size-full flex-center bg-#90909048 dark:bg-[#202020]">
           <!-- TODO: 默认的图片是这个格式，如果动态替换需要更改对应其他的格式 -->
           <img data-tauri-drag-region class="size-76% object-contain" src="/hula.png" alt="" />
         </div>
       </div>
-      <div class="flex absolute right-20px bottom-0 gap-15px">
+      <div data-tauri-drag-region class="flex absolute right-20px bottom-0 gap-15px">
         <div class="text-#fff items-center flex">
           {{ userStore.userInfo?.name }}
         </div>
@@ -56,12 +61,12 @@
     </div>
 
     <!-- 动态列表 -->
-    <div class="flex flex-col items-center px-20px h-full mt-15px">
-      <n-scrollbar style="max-height: calc(100vh / var(--page-scale, 1) - 184px)" class="w-full rounded-b-8px">
+    <div class="flex flex-col items-center h-full mt-15px">
+      <n-scrollbar style="max-height: calc(100vh / var(--page-scale, 1) - 272px)" class="w-full">
         <DynamicList
           mode="pc"
           :avatar-size="42"
-          item-class="w-full mb-10px p-10px box-border cursor-pointer hover:bg-#f5f5f5 transition-colors duration-200"
+          item-class="w-full mb-10px px-32px py-10px box-border cursor-pointer"
           :empty-text="t('dynamic.list.empty')"
           :show-loaded-all="false"
           :single-image-size="{ width: '200px', height: '200px' }"
@@ -263,6 +268,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user.ts'
 import { useContactStore } from '@/stores/contacts.ts'
 import { useFeedStore } from '@/stores/feed.ts'
@@ -272,10 +278,9 @@ import { formatTimestamp } from '@/utils/ComputedTime'
 import type { FriendItem } from '@/services/types'
 import { storeToRefs } from 'pinia'
 import DynamicList from '@/components/common/DynamicList.vue'
-import { useWindow } from '@/hooks/useWindow'
 
-const { createWebviewWindow, sendWindowPayload, checkWinExist } = useWindow()
 const { t } = useI18n()
+const router = useRouter()
 const userStore = useUserStore()
 const contactStore = useContactStore()
 const feedStore = useFeedStore()
@@ -405,38 +410,10 @@ const handleRefresh = async () => {
   }
 }
 
-// 处理动态项点击 - 在新窗口中打开
+// 处理动态项点击 - 当前窗口跳转详情
 const handleItemClick = async (feedId: string) => {
-  const windowLabel = `dynamicDetail`
-
-  // 先检查窗口是否已存在
-  const existingWindow = await WebviewWindow.getByLabel(windowLabel)
-  if (existingWindow) {
-    // 如果窗口已存在，激活它并更新内容
-    await checkWinExist(windowLabel)
-    // 发送事件通知窗口更新内容
-    await existingWindow.emit('window-payload-updated', { feedId })
-    return
-  }
-
-  // 创建新的webview窗口来显示动态详情
-  const webview = await createWebviewWindow(
-    t('dynamic.page.detail.title'), // 窗口标题
-    windowLabel, // 窗口标签
-    800, // 宽度
-    900, // 高度
-    undefined, // 不需要关闭其他窗口
-    true, // 可调整大小
-    600, // 最小宽度
-    700, // 最小高度
-    false, // 不透明
-    false // 初始不显示（等待加载完成）
-  )
-
-  // 窗口创建后，发送payload
-  if (webview) {
-    await sendWindowPayload(windowLabel, { feedId })
-  }
+  if (!feedId) return
+  await router.push({ name: 'dynamicDetailWithId', params: { id: feedId } })
 }
 
 // 权限选择相关方法

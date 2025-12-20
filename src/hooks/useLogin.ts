@@ -93,6 +93,7 @@ export const useLogin = () => {
    * 登出账号
    */
   const logout = async () => {
+    globalStore.updateCurrentSessionRoomId('')
     const sendLogoutEvent = async () => {
       // ws 退出连接
       await invokeSilently('ws_disconnect')
@@ -143,7 +144,10 @@ export const useLogin = () => {
     globalStore.updateCurrentSessionRoomId('')
     // 2. 清除系统托盘图标上的未读数
     if (isMac()) {
-      await invokeWithErrorHandler('set_badge_count', { count: undefined })
+      const homeWindow = await WebviewWindow.getByLabel('home')
+      if (homeWindow) {
+        await homeWindow.setBadgeCount(undefined)
+      }
     }
   }
 
@@ -285,7 +289,7 @@ export const useLogin = () => {
           console.warn('关闭注册窗口失败:', error)
         })
       }
-      await createWebviewWindow('THOIFR', 'home', 960, 720, 'login', true, 330, 480, undefined, false)
+      await createWebviewWindow('HuLa', 'home', 960, 720, 'login', true, 330, 480, undefined, false)
       // 只有在成功创建home窗口并且已登录的情况下才显示托盘菜单
       globalStore.isTrayMenuShow = true
     } else {

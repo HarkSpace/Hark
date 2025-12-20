@@ -712,7 +712,12 @@
           </n-flex>
 
           <div style="height: 100px" class="flex flex-col items-end gap-6px">
-            <MsgInput ref="MsgInputRef" :isAIMode="!!selectedModel" @send-ai="handleSendAI" />
+            <MsgInput
+              ref="MsgInputRef"
+              :isAIMode="!!selectedModel"
+              :isAIStreaming="isAIStreaming"
+              @send-ai="handleSendAI"
+              @stop-ai="handleStopAIStream" />
           </div>
         </n-flex>
       </div>
@@ -869,11 +874,11 @@ import MsgInput from '@/components/rightBox/MsgInput.vue'
 import { useMitt } from '@/hooks/useMitt.ts'
 import { useSettingStore } from '@/stores/setting.ts'
 import { useUserStore } from '@/stores/user.ts'
-import MarkdownRender from 'vue-renderer-markdown'
+import MarkdownRender from 'markstream-vue'
 import { ROBOT_MARKDOWN_CUSTOM_ID } from '@/plugins/robot/utils/markdown'
 import { useResizeObserver } from '@vueuse/core'
 import { ThemeEnum, AiMsgContentTypeEnum } from '@/enums'
-import 'vue-renderer-markdown/index.css'
+import 'markstream-vue/index.css'
 import {
   modelPage,
   conversationCreateMy,
@@ -895,6 +900,8 @@ import {
   audioGetVoices
 } from '@/utils/ImRequestUtils'
 import { messageSendStream } from '@/utils/ImRequestUtils'
+import { messageSaveGeneratedContent } from '@/utils/ImRequestUtils'
+import { messageCancelStream } from '@/utils/ImRequestUtils'
 import { conversationGetMy } from '@/utils/ImRequestUtils'
 import { AvatarUtils } from '@/utils/AvatarUtils'
 import { persistAiImageFile, resolveAiImagePath } from '@/utils/PathUtil'
@@ -910,11 +917,16 @@ const { page, themes } = storeToRefs(settingStore)
 const SHIKI_LIGHT_THEME = 'vitesse-light'
 const SHIKI_DARK_THEME = 'vitesse-dark'
 const markdownCustomId = ROBOT_MARKDOWN_CUSTOM_ID
-const markdownThemes = [SHIKI_LIGHT_THEME, SHIKI_DARK_THEME] as const
+const markdownThemes = [SHIKI_LIGHT_THEME, SHIKI_DARK_THEME] as const as any
 
 const MsgInputRef = ref()
 /** 是否是编辑模式 */
 const isEdit = ref(false)
+// AI 流式状态
+const isAIStreaming = ref(false)
+const currentAiRequestId = ref<string | null>(null)
+const currentAiAccumulatedContent = ref('')
+const lastAiPrompt = ref('')
 const inputInstRef = ref<InputInst | null>(null)
 /** 原始标题 */
 const originalTitle = ref('')
@@ -1001,6 +1013,7 @@ interface Message {
 }
 
 const messageList = ref<Message[]>([])
+const MAX_MESSAGE_COUNT = 40 // 最多保留40条消息，防止内存泄漏
 const scrollContainerRef = ref<HTMLElement | null>(null)
 const messageContentRef = ref<HTMLElement | null>(null)
 const shouldAutoStickBottom = ref(true)
@@ -1028,6 +1041,7 @@ const conversationTokens = computed(() => {
 const serverTokenUsage = ref<number | null>(null)
 
 const aiMediaDownloadTasks = new Map<string, Promise<ArrayBuffer>>()
+const MAX_MEDIA_CACHE_SIZE = 10 // 最多缓存10个媒体下载任务
 
 // 将各种可能的二进制返回形式统一转成 ArrayBuffer，兼容 plugin-http/浏览器 fetch 等场景
 const convertHttpDataToArrayBuffer = (rawData: unknown): ArrayBuffer => {
@@ -1084,6 +1098,14 @@ const requestAiMediaBuffer = (url: string) => {
   const existingTask = aiMediaDownloadTasks.get(url)
   if (existingTask) {
     return existingTask
+  }
+
+  // 清理缓存，防止内存泄漏
+  if (aiMediaDownloadTasks.size >= MAX_MEDIA_CACHE_SIZE) {
+    const firstKey = aiMediaDownloadTasks.keys().next().value
+    if (firstKey) {
+      aiMediaDownloadTasks.delete(firstKey)
+    }
   }
 
   const downloadTask = (async () => {
@@ -1555,7 +1577,8 @@ const clearVideoImage = () => {
 }
 
 // 轮询任务管理
-const pollingTasks = new Map<number, { timerId: number; conversationId: string }>()
+const MAX_POLL_DURATION = 5 * 60 * 1000 // 5 分钟超时保护，避免长时间挂起占用内存
+const pollingTasks = new Map<number, { timerId: number; conversationId: string; startedAt: number }>()
 
 // 停止所有轮询任务
 const stopAllPolling = () => {
@@ -1630,7 +1653,7 @@ const isRenderableAiImage = (message: Message) => {
 
 const getAiPlaceholderText = (message: Message) => {
   if (message.content && message.content.trim()) return message.content
-  return AI_THINKING_PLACEHOLDER
+  return isAIStreaming.value ? AI_THINKING_PLACEHOLDER : ''
 }
 
 // AI消息发送处理
@@ -1668,6 +1691,8 @@ const handleSendAI = (data: { content: string }) => {
 // AI消息发送实现
 const sendAIMessage = async (content: string, model: any) => {
   try {
+    lastAiPrompt.value = content
+    currentAiAccumulatedContent.value = ''
     const tokenBudget = Number(model?.maxTokens || 0)
     if (tokenBudget > 0 && conversationTokens.value >= tokenBudget) {
       window.$message.warning(`本会话 Token 已用完（${tokenBudget}），请新建会话或更换模型`)
@@ -1712,6 +1737,7 @@ const sendAIMessage = async (content: string, model: any) => {
       createTime: Date.now()
     })
 
+    isAIStreaming.value = true
     await messageSendStream(
       {
         conversationId: currentChat.value.id,
@@ -1720,44 +1746,54 @@ const sendAIMessage = async (content: string, model: any) => {
         reasoningEnabled: reasoningEnabled.value
       },
       {
+        onStart: (rid: string) => {
+          currentAiRequestId.value = rid
+        },
         onChunk: (chunk: string) => {
+          // 兼容：JSON 包装增量 & 纯文本增量
+          let handled = false
           try {
             const data = JSON.parse(chunk)
-            if (data.success && data.data?.receive) {
-              // 处理正常内容
+            if (data && data.success && data.data?.receive) {
               if (data.data.receive.content) {
                 const incrementalContent = data.data.receive.content
-                // 第一段内容到达时清空占位符
                 if (
                   messageList.value[aiMessageIndex].content === AI_THINKING_PLACEHOLDER &&
                   accumulatedContent === ''
                 ) {
                   messageList.value[aiMessageIndex].content = ''
                 }
-                // 手动累加内容、更新AI消息内容
                 accumulatedContent += incrementalContent
                 messageList.value[aiMessageIndex].content = accumulatedContent
+                currentAiAccumulatedContent.value = accumulatedContent
               }
-
-              // 处理推理思考内容
               if (data.data.receive.reasoningContent) {
                 const incrementalReasoningContent = data.data.receive.reasoningContent
                 accumulatedReasoningContent += incrementalReasoningContent
                 messageList.value[aiMessageIndex].reasoningContent = accumulatedReasoningContent
               }
-
-              // 设置 msgType（如果后端返回了）
               if (data.data.receive.msgType !== undefined) {
                 messageList.value[aiMessageIndex].msgType = data.data.receive.msgType
               }
-
-              scrollToBottom()
+              handled = true
             }
-          } catch (e) {
-            console.error('解析JSON失败:', e, '原始数据:', chunk)
+          } catch {}
+
+          if (!handled) {
+            const incrementalContent = chunk || ''
+            if (messageList.value[aiMessageIndex].content === AI_THINKING_PLACEHOLDER && accumulatedContent === '') {
+              messageList.value[aiMessageIndex].content = ''
+            }
+            accumulatedContent += incrementalContent
+            messageList.value[aiMessageIndex].content = accumulatedContent
+            currentAiAccumulatedContent.value = accumulatedContent
           }
+
+          scrollToBottom()
         },
         onDone: () => {
+          isAIStreaming.value = false
+          currentAiRequestId.value = null
           scrollToBottom()
           const latestEntry = messageList.value[messageList.value.length - 1]
           const latestTimestamp = latestEntry?.createTime ?? currentChat.value.createTime ?? Date.now()
@@ -1790,6 +1826,8 @@ const sendAIMessage = async (content: string, model: any) => {
         onError: (error: string) => {
           console.error('AI流式响应错误:', error)
           messageList.value[aiMessageIndex].content = '抱歉，发生了错误：' + error
+          isAIStreaming.value = false
+          currentAiRequestId.value = null
         }
       }
     )
@@ -1805,6 +1843,38 @@ const sendAIMessage = async (content: string, model: any) => {
     window.$message.error('发送失败，请检查网络连接')
   } finally {
     window.$message.destroyAll()
+  }
+}
+
+// 停止AI流式生成
+const handleStopAIStream = async () => {
+  if (!isAIStreaming.value || !currentAiRequestId.value) return
+  try {
+    window.$message.destroyAll()
+    await messageCancelStream(currentAiRequestId.value)
+    await new Promise((resolve) => setTimeout(resolve, 180))
+    const lastMsg = messageList.value[messageList.value.length - 1]
+    if (lastMsg && lastMsg.type === 'assistant' && lastMsg.content === AI_THINKING_PLACEHOLDER) {
+      lastMsg.content = ''
+    }
+    const latest =
+      lastMsg && lastMsg.type === 'assistant' && lastMsg.content && lastMsg.content !== AI_THINKING_PLACEHOLDER
+        ? lastMsg.content
+        : currentAiAccumulatedContent.value
+    if (latest && latest.trim()) {
+      await messageSaveGeneratedContent({
+        conversationId: currentChat.value.id,
+        prompt: lastAiPrompt.value,
+        generatedContent: latest
+      })
+    }
+    window.$message.success('已停止生成')
+  } catch (e) {
+    console.error('停止生成失败:', e)
+    window.$message.error('停止生成失败')
+  } finally {
+    isAIStreaming.value = false
+    currentAiRequestId.value = null
   }
 }
 
@@ -1884,6 +1954,19 @@ const pollImageStatus = async (
   const conversationId = currentChat.value.id
 
   const poll = async () => {
+    const task = pollingTasks.get(imageId)
+    if (!task) return
+
+    // 超时保护
+    if (Date.now() - task.startedAt > MAX_POLL_DURATION) {
+      window.clearInterval(task.timerId)
+      pollingTasks.delete(imageId)
+      messageList.value[messageIndex].content = '图片生成超时，请重试'
+      messageList.value[messageIndex].isGenerating = false
+      window.$message.warning('图片生成超时，已停止轮询')
+      return
+    }
+
     try {
       if (!pollingTasks.has(imageId)) {
         return
@@ -1945,7 +2028,7 @@ const pollImageStatus = async (
 
   // 启动定时轮询
   const timerId = window.setInterval(poll, interval)
-  pollingTasks.set(imageId, { timerId, conversationId })
+  pollingTasks.set(imageId, { timerId, conversationId, startedAt: Date.now() })
 
   // 立即执行第一次轮询
   poll()
@@ -2041,6 +2124,19 @@ const pollVideoStatus = async (
   const conversationId = currentChat.value.id
 
   const poll = async () => {
+    const task = pollingTasks.get(videoId)
+    if (!task) return
+
+    // 超时保护
+    if (Date.now() - task.startedAt > MAX_POLL_DURATION) {
+      window.clearInterval(task.timerId)
+      pollingTasks.delete(videoId)
+      messageList.value[messageIndex].content = '视频生成超时，请重试'
+      messageList.value[messageIndex].isGenerating = false
+      window.$message.warning('视频生成超时，已停止轮询')
+      return
+    }
+
     try {
       // 检查任务是否已被停止
       if (!pollingTasks.has(videoId)) {
@@ -2103,7 +2199,7 @@ const pollVideoStatus = async (
 
   // 启动定时轮询
   const timerId = window.setInterval(poll, interval)
-  pollingTasks.set(videoId, { timerId, conversationId })
+  pollingTasks.set(videoId, { timerId, conversationId, startedAt: Date.now() })
 
   // 立即执行第一次轮询
   poll()
@@ -2175,6 +2271,19 @@ const pollAudioStatus = async (audioId: number, messageIndex: number, prompt: st
   const conversationId = currentChat.value.id
 
   const poll = async () => {
+    const task = pollingTasks.get(audioId)
+    if (!task) return
+
+    // 超时保护
+    if (Date.now() - task.startedAt > MAX_POLL_DURATION) {
+      window.clearInterval(task.timerId)
+      pollingTasks.delete(audioId)
+      messageList.value[messageIndex].content = '音频生成超时，请重试'
+      messageList.value[messageIndex].isGenerating = false
+      window.$message.warning('音频生成超时，已停止轮询')
+      return
+    }
+
     try {
       if (!pollingTasks.has(audioId)) {
         return
@@ -2231,7 +2340,7 @@ const pollAudioStatus = async (audioId: number, messageIndex: number, prompt: st
   }
 
   const timerId = window.setInterval(poll, interval)
-  pollingTasks.set(audioId, { timerId, conversationId })
+  pollingTasks.set(audioId, { timerId, conversationId, startedAt: Date.now() })
 
   poll()
 }
@@ -2468,7 +2577,10 @@ const loadMessages = async (conversationId: string) => {
       // 清空当前消息列表
       messageList.value = []
 
-      data.forEach((msg: any) => {
+      // 限制消息数量，只保留最近的 MAX_MESSAGE_COUNT 条
+      const limitedData = data.slice(-MAX_MESSAGE_COUNT)
+
+      limitedData.forEach((msg: any) => {
         const nextMessage: Message = {
           type: msg.type,
           content: msg.content || '',
@@ -2824,6 +2936,9 @@ onMounted(async () => {
 onUnmounted(() => {
   // 停止所有轮询任务
   stopAllPolling()
+  if (isAIStreaming.value) {
+    void handleStopAIStream()
+  }
 
   useMitt.off('refresh-role-list', handleRefreshRoleList)
   useMitt.off('refresh-model-list', handleRefreshModelList)
@@ -2837,6 +2952,9 @@ watch(
   (newId, oldId) => {
     if (oldId && oldId !== newId) {
       stopConversationPolling(oldId)
+      if (isAIStreaming.value) {
+        void handleStopAIStream()
+      }
     }
   }
 )

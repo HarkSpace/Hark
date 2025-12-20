@@ -13,6 +13,17 @@ import { useI18n } from 'vue-i18n'
 
 const msgBoxShow = ref(false)
 const shrinkStatus = ref(false)
+
+// 模块级别注册事件监听，避免 hook 被多次调用时重复注册
+let isShrinkListenerRegistered = false
+const registerShrinkListener = () => {
+  if (isShrinkListenerRegistered) return
+  isShrinkListenerRegistered = true
+  useMitt.on(MittEnum.SHRINK_WINDOW, async (event: any) => {
+    shrinkStatus.value = event as boolean
+  })
+}
+
 export const useMessage = () => {
   const { t } = useI18n()
   const globalStore = useGlobalStore()
@@ -23,12 +34,9 @@ export const useMessage = () => {
   const groupStore = useGroupStore()
   const userStore = useUserStore()
   const BOT_ALLOWED_MENU_INDEXES = new Set([0, 1, 2, 3])
-  /** 监听独立窗口关闭事件 */
-  watchEffect(() => {
-    useMitt.on(MittEnum.SHRINK_WINDOW, async (event: any) => {
-      shrinkStatus.value = event as boolean
-    })
-  })
+
+  // 确保监听器只注册一次
+  registerShrinkListener()
 
   /**
    * 处理点击选中消息
@@ -51,13 +59,26 @@ export const useMessage = () => {
   const handleMsgClick = async (item: SessionItem) => {
     msgBoxShow.value = true
     // 更新当前会话信息
-    globalStore.updateCurrentSessionRoomId(item.roomId)
-    // 先更新会话，再根据是否存在自身成员做一次兜底刷新，防止批量切换账号后看到旧数据
-    await ensureGroupMembersSynced(item.roomId, item.type)
-    if (item.unreadCount && item.unreadCount > 0) {
-      // 先清空本地未读标记（立即更新UI），再异步上报已读（不阻塞）
-      chatStore.markSessionRead(item.roomId)
-      markMsgRead(item.roomId).catch((err) => console.error('[useMessage] 已读上报失败:', err))
+    const roomId = item.roomId
+    console.log('[handleMsgClick] 点击会话:', roomId, '传入的未读数:', item.unreadCount)
+
+    globalStore.updateCurrentSessionRoomId(roomId)
+
+    // 先清空本地未读标记（立即更新UI），再异步上报已读（不阻塞），避免后续同步群成员失败导致未读气泡残留
+    const currentSession = chatStore.getSession(roomId)
+    console.log('[handleMsgClick] 获取到的会话未读数:', currentSession?.unreadCount)
+
+    if (currentSession?.unreadCount && currentSession.unreadCount > 0) {
+      console.log('[handleMsgClick] 开始清除未读数:', roomId)
+      chatStore.markSessionRead(roomId)
+      markMsgRead(roomId).catch((err) => console.error('[useMessage] 已读上报失败:', err))
+    }
+
+    // 再根据是否存在自身成员做一次兜底刷新，防止批量切换账号后看到旧数据
+    try {
+      await ensureGroupMembersSynced(roomId, item.type)
+    } catch (error) {
+      console.error('[useMessage] 同步群成员失败:', error)
     }
   }
 

@@ -1,9 +1,12 @@
 <template>
   <n-scrollbar
+    ref="panelScrollbarRef"
     style="max-height: 290px"
-    :class="[isMobile() ? 'h-15rem w-auto' : 'h-290px w-460px']"
+    :class="[isMobile() ? 'h-15rem w-auto' : 'h-290px w-460px', isSeriesView ? 'emoji-panel-series' : '']"
     class="p-[14px_14px_0_14px] box-border select-none"
-    @scroll="activeMenuId = ''">
+    :size="isSeriesView ? 0 : undefined"
+    :trigger="isSeriesView ? 'none' : undefined"
+    @scroll="handlePanelScroll">
     <transition name="fade" mode="out-in">
       <div :key="activeIndex" class="emoji-content">
         <!-- 最近使用 -->
@@ -45,31 +48,48 @@
         </div>
 
         <!-- 表情包系列 -->
-        <div v-else-if="currentSeries">
-          <span class="text-12px text-[--text-color]">{{ currentSeries.name }}</span>
-          <n-flex align="center" :class="isMobile() ? 'emoji-pack-grid-mobile mx-6px my-12px' : 'mx-6px my-12px'">
-            <n-flex
-              align="center"
-              justify="center"
-              class="emoji-item"
-              v-for="(item, index) in currentSeries.emojis"
-              :key="index"
-              @click.stop="
-                chooseEmoji(
-                  {
-                    renderUrl: item.url,
-                    serverUrl: item.url
-                  },
-                  'url'
-                )
-              ">
-              <n-image
-                :title="item.name"
-                preview-disabled
-                :src="item.url"
-                class="size-full object-contain rounded-8px transition duration-300 ease-in-out transform-gpu" />
-            </n-flex>
-          </n-flex>
+        <div v-else-if="currentSeries" class="series-virtual-wrapper">
+          <span class="text-12px text-[--text-color] pl-12px">{{ currentSeries.name }}</span>
+          <div class="series-virtual-container mt-12px">
+            <n-virtual-list
+              ref="seriesVirtualListRef"
+              :items="displaySeriesRows"
+              :item-size="seriesRowHeight"
+              :style="{ height: seriesViewportHeight }"
+              class="series-virtual-list"
+              @scroll="handleSeriesScroll">
+              <template #default="{ item }">
+                <div
+                  class="emoji-pack-row"
+                  :style="{
+                    gridTemplateColumns: `repeat(${packColumns}, 1fr)`,
+                    gap: isMobile() ? '8px' : '12px'
+                  }">
+                  <div
+                    class="emoji-item emoji-item--image"
+                    v-for="(emojiItem, index) in item.emojis"
+                    :key="index"
+                    @click.stop="
+                      chooseEmoji(
+                        {
+                          renderUrl: emojiItem.url,
+                          serverUrl: emojiItem.url
+                        },
+                        'url'
+                      )
+                    ">
+                    <img
+                      :alt="emojiItem.name"
+                      :title="emojiItem.name"
+                      :src="emojiItem.url"
+                      loading="lazy"
+                      decoding="async"
+                      class="emoji-image size-full object-contain rounded-8px transition duration-300 ease-in-out transform-gpu" />
+                  </div>
+                </div>
+              </template>
+            </n-virtual-list>
+          </div>
         </div>
 
         <!-- 我的喜欢页面 -->
@@ -80,8 +100,8 @@
               <n-flex
                 align="center"
                 justify="center"
-                class="emoji-item py-4px"
-                v-for="(item, index) in reversedEmojiList"
+                class="emoji-item emoji-item--image py-4px"
+                v-for="(item, index) in displayFavoriteEmojis"
                 :key="index"
                 @click.stop="
                   chooseEmoji(
@@ -110,7 +130,7 @@
                         preview-disabled
                         :src="getEmojiRenderUrl(item)"
                         @contextmenu.prevent="handleContextMenu($event, item)"
-                        class="size-full object-contain rounded-8px transition duration-300 ease-in-out transform-gpu" />
+                        class="emoji-image size-full object-contain rounded-8px transition duration-300 ease-in-out transform-gpu" />
                     </div>
                   </template>
                   <n-button quaternary size="tiny" @click.stop="deleteMyEmoji(item.id)">
@@ -165,9 +185,9 @@ import { convertFileSrc } from '@tauri-apps/api/core'
 import { appDataDir, join, resourceDir } from '@tauri-apps/api/path'
 import { BaseDirectory, exists, writeFile } from '@tauri-apps/plugin-fs'
 import HulaEmojis from 'hula-emojis'
+import type { ScrollbarInst, VirtualListInst } from 'naive-ui'
 import pLimit from 'p-limit'
 import type { EmojiItem as EmojiListItem } from '@/services/types'
-import { useIntersectionTaskQueue } from '@/hooks/useIntersectionTaskQueue'
 import { useEmojiStore } from '@/stores/emoji'
 import { useHistoryStore } from '@/stores/history.ts'
 import { useUserStore } from '@/stores/user'
@@ -214,19 +234,19 @@ const { t } = useI18n()
 /** 获取米游社的表情包 */
 const emojisBbs = HulaEmojis.MihoyoBbs
 const activeIndex = ref(lastEmojiTabIndex)
-const currentSeriesIndex = ref(0)
+const isFavoritesView = computed(() => activeIndex.value === -1)
+const isSeriesView = computed(() => activeIndex.value > 0)
+const seriesVirtualListRef = ref<VirtualListInst | null>(null)
+const panelScrollbarRef = ref<ScrollbarInst | null>(null)
 // 设置当前右键点击的表情项ID
 const activeMenuId = ref('')
 const emojiLocalPathMap = ref<Record<string, string>>({})
 // 仅在元素可见时调度本地缓存，阈值随端变化
-const {
-  observe: observeEmojiVisibility,
-  unobserve: unobserveEmojiVisibility,
-  disconnect: disconnectEmojiObserver
-} = useIntersectionTaskQueue({
-  threshold: isMobile() ? 0.2 : 0.35,
-  rootMargin: isMobile() ? '24px 0px 24px' : '40px 0px 80px'
-})
+// 关闭收藏页的 IntersectionObserver，减少滚动开销
+const enableEmojiVisibilityObserver = false
+const observeEmojiVisibility = (_el: Element, _p0: () => void) => {}
+const unobserveEmojiVisibility = (_target: Element) => {}
+const disconnectEmojiObserver = () => {}
 const emojiVisibilityTargetMap = new Map<string, Element>()
 const cachingEmojiIds = new Set<string>()
 const emojiCacheEnv = ref<EmojiCacheEnvironment | null>(null)
@@ -267,11 +287,91 @@ const tabList = computed<TabItem[]>(() => {
 })
 
 const currentSeries = computed(() => (activeIndex.value > 0 ? emojisBbs.series[activeIndex.value - 1] : null))
+const packColumns = computed(() => (isMobile() ? 4 : 6))
+const SERIES_EMOJI_SIZE = 60
+const SERIES_ROW_VERTICAL_PADDING = 12
+const seriesRowHeight = computed(() => SERIES_EMOJI_SIZE + SERIES_ROW_VERTICAL_PADDING)
+const seriesViewportHeight = computed(() => (isMobile() ? '240px' : '260px'))
+const SERIES_PAGE_SIZE = 30
+const favoritesPage = ref(1)
+const seriesPage = ref(1)
+const favoritesPageSize = computed(() => (isMobile() ? 20 : 25))
 
 // 将"我的表情包"列表倒序显示
 const reversedEmojiList = computed(() => {
   return [...emojiStore.emojiList].reverse()
 })
+
+const displayFavoriteEmojis = computed(() => {
+  const size = favoritesPage.value * favoritesPageSize.value
+  return reversedEmojiList.value.slice(0, size)
+})
+
+const displaySeriesRows = computed(() => {
+  if (!currentSeries.value) return []
+  const cols = packColumns.value
+  const size = seriesPage.value * SERIES_PAGE_SIZE
+  const visibleEmojiCount = Math.min(currentSeries.value.emojis.length, size)
+  const rows: { key: number; emojis: (typeof currentSeries.value.emojis)[number][] }[] = []
+  for (let i = 0; i < visibleEmojiCount; i += cols) {
+    rows.push({ key: i, emojis: currentSeries.value.emojis.slice(i, i + cols) })
+  }
+  return rows
+})
+
+const SCROLL_LOAD_MORE_THRESHOLD = 32
+const isNearBottom = (target: HTMLElement) =>
+  target.scrollTop + target.clientHeight >= target.scrollHeight - SCROLL_LOAD_MORE_THRESHOLD
+
+const favoritesLoadMoreLock = ref(false)
+const seriesLoadMoreLock = ref(false)
+const hydrateScheduled = ref(false)
+
+const loadMoreFavorites = async () => {
+  if (favoritesLoadMoreLock.value) return
+  if (displayFavoriteEmojis.value.length >= reversedEmojiList.value.length) return
+  favoritesLoadMoreLock.value = true
+  favoritesPage.value += 1
+  await nextTick()
+  favoritesLoadMoreLock.value = false
+}
+
+const loadMoreSeries = async () => {
+  if (seriesLoadMoreLock.value) return
+  if (!currentSeries.value) return
+  if (seriesPage.value * SERIES_PAGE_SIZE >= currentSeries.value.emojis.length) return
+  seriesLoadMoreLock.value = true
+  seriesPage.value += 1
+  await nextTick()
+  seriesLoadMoreLock.value = false
+}
+
+const handlePanelScroll = (event: Event) => {
+  activeMenuId.value = ''
+  const target =
+    (panelScrollbarRef.value as any)?.containerRef ||
+    (event.target as HTMLElement | null) ||
+    (event.currentTarget as HTMLElement | null)
+  if (!target) return
+  if (isFavoritesView.value) {
+    if (isNearBottom(target)) {
+      void loadMoreFavorites()
+    }
+    return
+  }
+}
+
+const handleSeriesScroll = (event?: Event) => {
+  if (!currentSeries.value) return
+  const target =
+    (event?.target as HTMLElement | null) ||
+    (event?.currentTarget as HTMLElement | null) ||
+    (seriesVirtualListRef.value as any)?.listElRef
+  if (!target) return
+  if (isNearBottom(target)) {
+    void loadMoreSeries()
+  }
+}
 
 const res = getAllTypeEmojis()
 
@@ -303,6 +403,9 @@ const emojiRef = reactive<{
 
 // 只在支持 window/Worker 的环境下按需创建 emoji 缓存 Worker，并在全局复用
 const getEmojiWorker = () => {
+  if (!isFavoritesView.value) {
+    return null
+  }
   if (typeof window === 'undefined') {
     return null
   }
@@ -338,15 +441,21 @@ const resolveEmojiExtension = async (url: string) => {
   if (emojiExtCache.has(url)) {
     return emojiExtCache.get(url)!
   }
+  const inferred = inferExtFromUrl(url)
+  if (inferred) {
+    const ext = inferred.toLowerCase()
+    emojiExtCache.set(url, ext)
+    return ext
+  }
   let ext = ''
   try {
-    const info = await detectRemoteFileType({ url, fileSize: 1 })
+    const info = await detectRemoteFileType({ url, fileSize: null })
     ext = info?.ext || ''
   } catch (error) {
     console.warn('识别表情类型失败:', error)
   }
   if (!ext) {
-    ext = inferExtFromUrl(url) || 'png'
+    ext = 'png'
   }
   emojiExtCache.set(url, ext)
   return ext
@@ -374,6 +483,7 @@ const setEmojiLocalPath = (id: string, absolutePath: string, expressionUrl?: str
 }
 
 const ensureEmojiCacheEnvironment = async () => {
+  if (!isFavoritesView.value) return null
   const uid = userStore.userInfo?.uid
   if (!uid) {
     return null
@@ -482,6 +592,18 @@ const cleanupEmojiObservers = (validIds: string[]) => {
   })
 }
 
+const cleanupAllEmojiCaches = () => {
+  emojiLocalPathMap.value = {}
+  emojiExtCache.clear()
+  localUrlCache.clear()
+  emojiUrlToLocalMap.clear()
+  emojiVisibilityTargetMap.forEach((el) => unobserveEmojiVisibility(el))
+  emojiVisibilityTargetMap.clear()
+  cachingEmojiIds.clear()
+  downloadingUrls.clear()
+  emojiCacheEnv.value = null
+}
+
 // 只有当收藏项真正出现在视口内时才执行缓存下载
 const handleEmojiVisibility = async (emojiItem: EmojiListItem) => {
   const id = emojiItem.id
@@ -506,6 +628,7 @@ const handleEmojiVisibility = async (emojiItem: EmojiListItem) => {
 
 // 绑定 DOM 元素到观察器，等待其进入视口后触发下载
 const registerEmojiVisibilityTarget = (target: Element | ComponentPublicInstance | null, emojiItem: EmojiListItem) => {
+  if (!enableEmojiVisibilityObserver) return
   releaseEmojiObserver(emojiItem.id)
   const el = resolveVisibilityElement(target)
   if (!el || !emojiItem.expressionUrl || emojiItem.localUrl || emojiLocalPathMap.value[emojiItem.id]) {
@@ -537,6 +660,7 @@ const ensureEmojiCached = async (
 
 // 将 store 中已有表情与本地缓存对齐，优先使用本地链接渲染
 const hydrateEmojiLocalCache = async () => {
+  if (!isFavoritesView.value) return
   const env = await ensureEmojiCacheEnvironment()
   if (!env) return
   const downloadTasks: Promise<unknown>[] = []
@@ -576,36 +700,45 @@ const hydrateEmojiLocalCache = async () => {
   }
 }
 
+const scheduleHydrateFavorites = () => {
+  if (hydrateScheduled.value || !isFavoritesView.value) return
+  hydrateScheduled.value = true
+  const runner = () => {
+    hydrateScheduled.value = false
+    void hydrateEmojiLocalCache()
+  }
+  if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+    ;(window as any).requestIdleCallback(runner, { timeout: 800 })
+  } else {
+    setTimeout(runner, 80)
+  }
+}
+
 // 监听收藏列表变化，保持本地映射与观察目标同步
 watch(
   () => emojiStore.emojiList.map((item) => ({ id: item.id, url: item.expressionUrl })),
   (list) => {
+    if (!isFavoritesView.value) return
     const ids = list.map((item) => item.id)
     cleanupLocalEmojiMap(ids)
     cleanupEmojiObservers(ids)
-    void hydrateEmojiLocalCache()
+    scheduleHydrateFavorites()
   },
-  { immediate: true, deep: true }
+  { immediate: false, deep: true }
 )
 
 // 用户切换时重置缓存上下文与观察器
 watch(
   () => userStore.userInfo?.uid,
   () => {
-    emojiLocalPathMap.value = {}
-    emojiCacheEnv.value = null
-    cachingEmojiIds.clear()
-    emojiVisibilityTargetMap.forEach((el) => {
-      unobserveEmojiVisibility(el)
-    })
-    emojiVisibilityTargetMap.clear()
+    cleanupAllEmojiCaches()
     disconnectEmojiObserver()
-    // 切换账号后如已有列表，立即尝试用本地缓存替换链接
-    if (emojiStore.emojiList.length > 0 && userStore.userInfo?.uid) {
-      void hydrateEmojiLocalCache()
+    // 切换账号后如已有列表，且当前在我的喜欢视图时，再尝试用本地缓存替换链接
+    if (emojiStore.emojiList.length > 0 && userStore.userInfo?.uid && isFavoritesView.value) {
+      scheduleHydrateFavorites()
     }
   },
-  { immediate: true }
+  { immediate: false }
 )
 
 /**
@@ -681,13 +814,16 @@ const chooseEmoji = async (item: any, type: 'emoji' | 'url' = 'emoji') => {
             serverUrl: item.serverUrl || item.expressionUrl || ''
           }
         : { renderUrl: typeof item === 'string' ? item : '', serverUrl: typeof item === 'string' ? item : '' }
-    try {
-      const local = await ensureLocalByServerUrl(payload.serverUrl || payload.renderUrl, payload.id)
-      if (local) {
-        payload.renderUrl = local
-      }
-    } catch (error) {
-      console.warn('[emoji] 获取本地表情失败，回退服务器URL', error)
+    if (!isFavoritesView.value) {
+      emit('emojiHandle', payload, 'emoji-url')
+      return payload
+    }
+    // 收藏页：只使用已有缓存，完全不在点击时触发下载，避免阻塞发送
+    const serverKey = payload.serverUrl || payload.renderUrl
+    const cached =
+      (payload.id && emojiLocalPathMap.value[payload.id]) || (serverKey ? emojiUrlToLocalMap.get(serverKey) : undefined)
+    if (cached) {
+      payload.renderUrl = cached
     }
     emit('emojiHandle', payload, 'emoji-url')
     return payload
@@ -710,66 +846,31 @@ const getEmojiRenderUrl = (item: EmojiListItem) => {
   return item.expressionUrl
 }
 
-// 确保某个服务端 URL 有本地副本，并返回可用于渲染的本地链接
-const ensureLocalByServerUrl = async (serverUrl: string, id?: string) => {
-  try {
-    if (!serverUrl) return null
-    if (emojiUrlToLocalMap.has(serverUrl)) return emojiUrlToLocalMap.get(serverUrl)!
-    const env = await ensureEmojiCacheEnvironment()
-    if (!env) return null
-    const fileName = await buildEmojiFileName(serverUrl)
-    const relativePath = await join(env.emojiDir, fileName)
-    const hasFile = await exists(relativePath, { baseDir: env.baseDir })
-    const absolutePath = await join(env.baseDirPath, relativePath)
-    if (hasFile) {
-      const localUrl = convertFileSrc(absolutePath)
-      emojiUrlToLocalMap.set(serverUrl, localUrl)
-      localUrlCache.set(serverUrl, localUrl)
-      if (id) {
-        const next = { ...emojiLocalPathMap.value }
-        next[id] = localUrl
-        emojiLocalPathMap.value = next
-      }
-      return localUrl
-    }
-    // 未命中本地文件则异步下载，先返回 null 以便立即使用服务器 URL 展示
-    if (!downloadingUrls.has(serverUrl)) {
-      downloadingUrls.add(serverUrl)
-      void downloadLimit(async () => {
-        try {
-          const bytes = await downloadEmojiFile(serverUrl)
-          await writeFile(relativePath, bytes, { baseDir: env.baseDir })
-          const localUrl = convertFileSrc(absolutePath)
-          emojiUrlToLocalMap.set(serverUrl, localUrl)
-          localUrlCache.set(serverUrl, localUrl)
-          // 触发视图更新
-          if (id) {
-            const nextMap = { ...emojiLocalPathMap.value }
-            nextMap[id] = localUrl
-            emojiLocalPathMap.value = nextMap
-          }
-        } catch (error) {
-          console.error('[emoji] ensureLocalByServerUrl 下载失败:', serverUrl, error)
-          clearEmojiLocalPath('', serverUrl)
-        } finally {
-          downloadingUrls.delete(serverUrl)
-        }
-      })
-    }
-    return null
-  } catch (error) {
-    console.warn('[emoji] ensureLocalByServerUrl 异常，回退服务器URL', error)
-    return null
-  }
-}
-
 /**
  * 切换表情类型标签
  */
 const handleTabChange = (index: number) => {
   activeIndex.value = index
-  if (index === 1) {
-    currentSeriesIndex.value = 0
+  if (index === -1) {
+    favoritesPage.value = 1
+  }
+  if (index > 0) {
+    seriesPage.value = 1
+  }
+  void nextTick().then(() => {
+    panelScrollbarRef.value?.scrollTo({ top: 0 })
+  })
+  // 切换到非“我的喜欢”视图时，立即清理缓存相关状态
+  if (index !== -1) {
+    cleanupAllEmojiCaches()
+    disconnectEmojiObserver()
+    if (emojiCacheWorker) {
+      emojiCacheWorker.terminate()
+      emojiCacheWorker = null
+    }
+  } else {
+    // 切回“我的喜欢”时尝试同步本地缓存
+    void hydrateEmojiLocalCache()
   }
   setLastEmojiTabIndex(index)
 }
@@ -778,20 +879,14 @@ const handleTabChange = (index: number) => {
  * 选择表情包系列
  */
 const selectSeries = (index: number) => {
-  currentSeriesIndex.value = index
-  activeIndex.value = index + 1
-  setLastEmojiTabIndex(index + 1)
+  handleTabChange(index + 1)
 }
 
 onMounted(async () => {
   // 获取我的表情包列表
   await emojiStore.getEmojiList()
-  // 表情列表加载后立即尝试使用本地缓存
-  await hydrateEmojiLocalCache()
-  // 如果上次选择的是表情包系列，设置正确的currentSeriesIndex
-  if (activeIndex.value > 0) {
-    currentSeriesIndex.value = activeIndex.value - 1
-  }
+  // 仅在“我的喜欢”视图时才尝试使用本地缓存，避免系列表情也走缓存逻辑
+  scheduleHydrateFavorites()
 })
 
 onBeforeUnmount(() => {
@@ -800,6 +895,7 @@ onBeforeUnmount(() => {
     emojiCacheWorker.terminate()
     emojiCacheWorker = null
   }
+  cleanupAllEmojiCaches()
 })
 </script>
 
@@ -817,18 +913,14 @@ onBeforeUnmount(() => {
 
 .emoji-item {
   @apply cursor-pointer;
+  @apply size-36px text-26px hover:bg-[--emoji-hover] rounded-8px;
+}
 
-  // 默认表情的样式
-  &:not(:has(.n-image)) {
-    @apply size-36px text-26px hover:bg-[--emoji-hover] rounded-8px;
-  }
+.emoji-item--image {
+  @apply size-60px hover:bg-transparent;
 
-  // 米游社表情包的样式
-  &:has(.n-image) {
-    @apply size-60px;
-    &:hover .n-image {
-      @apply hover:scale-116 bg-[--emoji-hover] rounded-8px;
-    }
+  &:hover .emoji-image {
+    @apply scale-116 bg-[--emoji-hover] rounded-8px;
   }
 }
 
@@ -879,6 +971,29 @@ onBeforeUnmount(() => {
 .emoji-content {
   position: relative;
   width: 100%;
+}
+
+.emoji-pack-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  padding: 6px 12px;
+  min-height: 72px;
+}
+
+.series-virtual-container {
+  width: 100%;
+  margin: 0;
+  padding: 6px 0 0 0;
+}
+
+.emoji-panel-series > .n-scrollbar-rail.n-scrollbar-rail--vertical {
+  // 仅隐藏外层滚动条，不影响内层虚拟列表
+  display: none !important;
+}
+
+.emoji-panel-series {
+  padding: 14px 0 0 0 !important;
 }
 
 .fade-enter-active,

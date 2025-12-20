@@ -5,6 +5,9 @@
 <p align="center">一款基于Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯系统</p>
 
 <div align="center">
+  <a href="https://trendshift.io/repositories/15187" target="_blank">
+    <img src="https://trendshift.io/api/badge/repositories/15187" alt="HuLaSpark%2FHuLa | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/>
+  </a>
   <a href="https://hellogithub.com/repository/743b101346c54f6cb5c20eed2edbaa40" target="_blank">
     <img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=743b101346c54f6cb5c20eed2edbaa40&claim_uid=WsQaY6SlnL7qxG3&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" />
   </a>
@@ -22,6 +25,9 @@
     </a>
     <a href="https://gitcode.com/HuLaSpark/HuLa">
       <img src="https://gitcode.com/HuLaSpark/HuLa/star/badge.svg" alt="GitCode Stars">
+    </a>
+    <a href="https://gitcode.com/HuLaSpark/HuLa">
+      <img src="https://atomgit.com/HuLaSpark/HuLa/star/2025top.svg" alt="2025百大开源项目">
     </a>
   </p>
 </div>
@@ -84,11 +90,6 @@
   <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=pt">Português</a> |
   <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=ru">Русский</a>
 </p>
-
-<div style="background-color:#fbb99030;color:#fbb990;padding:16px;border-radius:12px;">
-  <p><strong>⚠️ 重要提示</strong></p>
-  <p>加群前请仔细认真阅读本 README，否则在群里问有没有移动端、是否支持 Web、支持什么功能等问题不予以回答。因为本组织在维持开源已经很耗费精力了，并且请不要在节假日、休息日打扰作者或者组织维护人员，遇到问题可以在群里发个小红包自然有人会过来回答你。赞助 HuLa 可单独咨询或加速开发某功能，Star 项目可咨询一次。感谢您的理解🙏</p>
-</div>
 
 ## 🌐 支持平台
 
@@ -254,6 +255,12 @@ HuLa 是一款基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯
 | 🧠   | AI 聊天助手    | ![完成](https://img.shields.io/badge/✅-完成-008080?style=flat&labelColor=e6f7f7&color=008080) |
 | 🔌   | 多平台 AI 支持 | ![完成](https://img.shields.io/badge/✅-完成-008080?style=flat&labelColor=e6f7f7&color=008080) |
 
+## 应用升级赞助商
+
+<a href="https://www.toolsetlink.com">
+  <img height="54" alt="UpgradeLink" src="https://github.com/user-attachments/assets/6b84fb0f-3f1d-44b5-9932-2298bc999d8d" />
+</a>
+
 ## 👏 感谢以下贡献者们！
 
 <a href="https://openomy.com/HuLaSpark/HuLa" target="_blank" style="display: block; width: 100%;" align="center">
@@ -384,6 +391,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 
 | 💝 日期    | 👤 赞助者        | 💰 金额 | 🏷️ 平台                                                                                              |
 | ---------- | ---------------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| 2025-12-13 | **M（PiDAOLab）**           | `¥500`  | ![微信转账](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white) 
 | 2025-11-12 | **星**           | `¥500`  | ![微信转账](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)     |
 | 2025-09-03 | **烛火**         | `¥500`  | ![微信转账](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)     |
 | 2025-09-05 | **Orion**        | `¥200`  | ![微信赞赏](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)     |
@@ -408,7 +416,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 | 2025-05-09 | **犹豫，就会败北。** | `¥88`    | ![微信赞赏](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)  |
 | 2025-04-01 | **墨**               | `¥88.88` | ![微信赞赏](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)  |
 | 2025-02-8  | **邓伟**             | `¥88`    | ![微信赞赏](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)  |
-| 2025-02-7  | **dennis**           | `¥80`    | ![Gitee赞赏](https://img.shields.io/badge/Gitee赞赏-C71D23?style=flat&logo=gitee&logoColor=white) |
+| 2025-02-7  | **dennis**           | `¥40`    | ![Gitee赞赏](https://img.shields.io/badge/Gitee赞赏-C71D23?style=flat&logo=gitee&logoColor=white) |
 | 2025-11-5  | **匿名用户**         | `¥66`    | ![微信赞赏](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)  |
 | 2025-02-6  | **小二**             | `¥62`    | ![微信赞赏](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)  |
 | 2025-05-15 | **孤鸿影**           | `¥56`    | ![微信赞赏](https://img.shields.io/badge/微信赞赏-07C160?style=flat&logo=wechat&logoColor=white)  |

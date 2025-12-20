@@ -1,11 +1,9 @@
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
-import { info } from '@tauri-apps/plugin-log'
 import { useDebounceFn } from '@vueuse/core'
 import { sumBy } from 'es-toolkit'
 import { NotificationTypeEnum } from '@/enums'
 import type { SessionItem } from '@/services/types'
 import { isMac } from '@/utils/PlatformConstants'
-import { invokeWithErrorHandler } from '@/utils/TauriInvokeHandler'
 
 /**
  * 统一的未读计数管理器
@@ -49,20 +47,14 @@ export class UnreadCountManager {
    * 计算全局未读计数
    * @param sessionList 会话列表
    * @param unReadMark 全局未读标记对象
+   * @param feedUnreadCount 朋友圈未读数（可选）
    */
   public calculateTotal(
     sessionList: SessionItem[],
-    unReadMark: { newFriendUnreadCount: number; newGroupUnreadCount: number; newMsgUnreadCount: number }
+    unReadMark: { newFriendUnreadCount: number; newGroupUnreadCount: number; newMsgUnreadCount: number },
+    feedUnreadCount?: number
   ) {
-    // 检查当前窗口标签
-    const webviewWindowLabel = WebviewWindow.getCurrent()
-    if (webviewWindowLabel.label !== 'home' && webviewWindowLabel.label !== 'mobile-home') {
-      return
-    }
-
-    info('[UnreadCountManager] 计算全局未读消息计数')
-
-    // 计算总未读数
+    // 计算总未读数（排除免打扰的会话）
     const totalUnread = sumBy(sessionList, (session) => {
       if (session.muteNotification === NotificationTypeEnum.NOT_DISTURB) {
         return 0
@@ -73,8 +65,8 @@ export class UnreadCountManager {
     // 更新全局未读计数
     unReadMark.newMsgUnreadCount = totalUnread
 
-    // 更新系统徽章
-    this.updateSystemBadge(unReadMark)
+    // 更新系统徽章（包含朋友圈未读数）
+    this.updateSystemBadge(unReadMark, feedUnreadCount)
   }
 
   /**
@@ -89,19 +81,32 @@ export class UnreadCountManager {
 
   /**
    * 更新系统徽章计数
+   * @param unReadMark 全局未读标记对象
+   * @param feedUnreadCount 朋友圈未读数（可选）
    */
-  private async updateSystemBadge(unReadMark: {
-    newFriendUnreadCount: number
-    newGroupUnreadCount: number
-    newMsgUnreadCount: number
-  }): Promise<void> {
+  private async updateSystemBadge(
+    unReadMark: {
+      newFriendUnreadCount: number
+      newGroupUnreadCount: number
+      newMsgUnreadCount: number
+    },
+    feedUnreadCount?: number
+  ): Promise<void> {
+    // 计算所有类型的未读总数
     const messageUnread = Math.max(0, unReadMark.newMsgUnreadCount || 0)
     const friendUnread = Math.max(0, unReadMark.newFriendUnreadCount || 0)
     const groupUnread = Math.max(0, unReadMark.newGroupUnreadCount || 0)
-    const badgeTotal = messageUnread + friendUnread + groupUnread
+    const feedUnread = Math.max(0, feedUnreadCount || 0)
+    const badgeTotal = messageUnread + friendUnread + groupUnread + feedUnread
+
+    // 在 macOS 上更新 Dock 图标徽章（显示所有类型未读总数）
     if (isMac()) {
       const count = badgeTotal > 0 ? badgeTotal : undefined
-      await invokeWithErrorHandler('set_badge_count', { count })
+      // 使用 getByLabel 获取 home 窗口，即使窗口隐藏也能正常设置徽章
+      const homeWindow = await WebviewWindow.getByLabel('home')
+      if (homeWindow) {
+        await homeWindow.setBadgeCount(count)
+      }
     }
 
     // 更新tipVisible状态，用于控制托盘通知显示
@@ -116,13 +121,18 @@ export class UnreadCountManager {
 
   /**
    * 手动刷新系统徽章计数
+   * @param unReadMark 全局未读标记对象
+   * @param feedUnreadCount 朋友圈未读数（可选）
    */
-  public refreshBadge(unReadMark: {
-    newFriendUnreadCount: number
-    newGroupUnreadCount: number
-    newMsgUnreadCount: number
-  }) {
-    this.updateSystemBadge(unReadMark)
+  public refreshBadge(
+    unReadMark: {
+      newFriendUnreadCount: number
+      newGroupUnreadCount: number
+      newMsgUnreadCount: number
+    },
+    feedUnreadCount?: number
+  ) {
+    this.updateSystemBadge(unReadMark, feedUnreadCount)
   }
 
   /**

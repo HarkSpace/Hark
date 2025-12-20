@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-full">
-    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="thoifr" />
+    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="THOIFR" />
 
     <!-- 页面蒙板 -->
     <div
@@ -563,7 +563,7 @@ const intoRoom = (item: any) => {
   const foundedUser = allUserMap.value.get(item.detailId)
 
   setTimeout(() => {
-    // 如果找到用户，就表示该会话属于好友，那就传入好友的uid;同时排除id为1的thoifr小管家
+    // 如果找到用户，就表示该会话属于好友，那就传入好友的uid;同时排除id为1的THOIFR小管家
     if (foundedUser && foundedUser.uid !== '1') {
       router.push({
         name: 'mobileChatMain',

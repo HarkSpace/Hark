@@ -2,13 +2,15 @@ import chalk from 'chalk'
 import { execSync } from 'child_process'
 import { existsSync } from 'fs'
 import { platform } from 'os'
+import { join } from 'path'
 
 // 环境安装指南
 const INSTALL_GUIDES = {
   'Node.js': 'https://nodejs.org/zh-cn/download/',
   pnpm: 'https://pnpm.io/zh/installation',
   Rust: 'https://www.rust-lang.org/tools/install',
-  'WebView2 Runtime': 'https://developer.microsoft.com/microsoft-edge/webview2/'
+  'WebView2 Runtime': 'https://developer.microsoft.com/microsoft-edge/webview2/',
+  Perl: 'https://strawberryperl.com/'
 }
 
 // 更新指南
@@ -16,14 +18,20 @@ const UPDATE_GUIDES = {
   Rust: '请运行 `rustup update` 命令更新 Rust 版本'
 }
 
-// Windows 特定的检查路径
+// Windows 特定的检查路径（只检查默认安装路径）
 const WINDOWS_PATHS = {
   'WebView2 Runtime': [
     'C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application',
-    'C:\\Program Files\\Microsoft\\EdgeWebView\\Application',
-    'C:\\Windows\\SystemApps\\Microsoft.Win32WebViewHost_cw5n1h2txyewy'
+    'C:\\Program Files\\Microsoft\\EdgeWebView\\Application'
   ]
 }
+
+// 默认安装路径（winget 安装的固定路径）
+const PERL_DEFAULT_PATH = 'C:\\Strawberry\\perl\\bin'
+const PERL_DEFAULT_EXECUTABLE = join(PERL_DEFAULT_PATH, 'perl.exe')
+const REQUIRED_PERL_OS = 'MSWin32'
+const REQUIRED_PERL_ARCH_KEYWORD = 'mswin32-x64-multi-thread'
+const PERL_INFO_ARGS = '-MConfig -e "print join(q{|}, $Config{osname}, $Config{archname}, $Config{prefix})"'
 
 // 错误信息映射
 const ERROR_MESSAGES = {
@@ -73,12 +81,100 @@ const checkWebView2 = () => {
   }
 }
 
+const quoteIfNeeded = (value) => {
+  if (!value) return ''
+  if (value.startsWith('"') && value.endsWith('"')) return value
+  return value.includes(' ') ? `"${value}"` : value
+}
+
+/**
+ * 读取当前 perl 的平台信息
+ * @param {string} [executable] 指定 perl 可执行文件
+ * @returns {{osname: string, archname: string, prefix: string}|null}
+ */
+const tryGetPerlInfo = (executable = 'perl') => {
+  try {
+    const command = `${quoteIfNeeded(executable)} ${PERL_INFO_ARGS}`
+    const output = execSync(command, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim()
+    const [osname = '', archname = '', prefix = ''] = output.split('|')
+    return { osname, archname, prefix }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * 判断 perl 是否为原生 64 位 Windows Perl（适用于 OpenSSL 编译）
+ * 支持 Strawberry Perl、ActivePerl 等原生 64 位 Windows Perl
+ * @param {{osname: string, archname: string, prefix: string}|null} info
+ * @returns {boolean}
+ */
+const isNativeWindowsPerl = (info) => {
+  if (!info) return false
+  const arch = info.archname?.toLowerCase() || ''
+  // 核心要求：原生 64 位 Windows Perl，不能是 Cygwin/MSYS 版本
+  return info.osname === REQUIRED_PERL_OS && arch.includes(REQUIRED_PERL_ARCH_KEYWORD)
+}
+
+/**
+ * 检查 Perl 是否安装，优先使用用户环境中的 Perl
+ * @returns {boolean}
+ */
+const checkPerl = () => {
+  // 1. 先检查用户 PATH 中是否有原生 Windows Perl
+  const info = tryGetPerlInfo()
+  if (isNativeWindowsPerl(info)) {
+    return true
+  }
+
+  // 2. 检查默认路径是否存在 Strawberry Perl
+  if (existsSync(PERL_DEFAULT_EXECUTABLE)) {
+    const fallbackInfo = tryGetPerlInfo(PERL_DEFAULT_EXECUTABLE)
+    if (isNativeWindowsPerl(fallbackInfo)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * 安装 Strawberry Perl（使用 winget）
+ * @returns {Promise<boolean>}
+ */
+const installStrawberryPerl = async () => {
+  try {
+    console.log(chalk.blue('  正在使用 winget 安装 Strawberry Perl...'))
+    execSync(
+      'winget install --id StrawberryPerl.StrawberryPerl --accept-source-agreements --accept-package-agreements',
+      {
+        stdio: 'inherit'
+      }
+    )
+
+    console.log(chalk.green('  ✅ Strawberry Perl 安装成功！'))
+    console.log(chalk.gray('  💡 .cargo/config.toml 已预配置 PERL 路径，无需额外配置'))
+    return true
+  } catch (error) {
+    console.log(chalk.red(`  ❌ Perl 安装失败: ${error.message}`))
+    console.log(chalk.gray(`  请手动安装: ${INSTALL_GUIDES.Perl}`))
+    return false
+  }
+}
+
 // Windows 特定的检查
 const windowsChecks = [
   {
     name: 'WebView2 Runtime',
     checkInstalled: checkWebView2,
     isRequired: true
+  },
+  {
+    name: 'Perl',
+    checkInstalled: checkPerl,
+    installer: installStrawberryPerl,
+    isRequired: true,
+    description: 'OpenSSL 编译依赖'
   }
 ]
 
@@ -199,28 +295,53 @@ function checkDependency(check) {
 /**
  * 检查 Windows 特定的依赖
  * @param {Object} check 检查项
- * @returns {boolean} 是否通过检查
+ * @returns {Promise<boolean>} 是否通过检查
  */
-function checkWindowsDependency(check) {
+async function checkWindowsDependency(check) {
   try {
     const isInstalled = check.checkInstalled()
     if (isInstalled) {
-      console.log(chalk.green(`✅ ${check.name} 已安装`))
+      const desc = check.description ? ` (${check.description})` : ''
+      console.log(chalk.green(`✅ ${check.name} 已安装${desc}`))
       return true
     } else {
-      console.log(chalk.red(`❌ ${check.name} 未安装`))
-      console.log(chalk.gray(`  👉 安装指南: ${INSTALL_GUIDES[check.name]}`))
-      return false
+      const desc = check.description ? ` (${check.description})` : ''
+      console.log(chalk.yellow(`⚠️ ${check.name} 未安装${desc}`))
+
+      // 如果有自动安装器，尝试自动安装
+      if (check.installer) {
+        console.log(chalk.blue(`  正在尝试自动安装 ${check.name}...`))
+        const installSuccess = await check.installer()
+        if (installSuccess) {
+          // 安装后再次检查
+          if (check.checkInstalled()) {
+            console.log(chalk.green(`✅ ${check.name} 安装成功并已配置`))
+            return true
+          }
+          // 即使检查失败，可能需要重启终端
+          console.log(chalk.yellow(`  ⚠️ ${check.name} 已安装，但可能需要重启终端才能生效`))
+          return true
+        }
+      }
+
+      if (check.isRequired) {
+        console.log(chalk.red(`❌ ${check.name} 是必需的依赖`))
+        console.log(chalk.gray(`  👉 安装指南: ${INSTALL_GUIDES[check.name]}`))
+        return false
+      } else {
+        console.log(chalk.yellow(`  跳过可选依赖 ${check.name}`))
+        return true
+      }
     }
   } catch (error) {
     const errorMessage = getFriendlyErrorMessage(error)
     console.log(chalk.red(`❌ ${check.name} 检查失败`))
     console.log(chalk.red(`  原因: ${errorMessage}`))
-    return false
+    return !check.isRequired
   }
 }
 
-function main() {
+async function main() {
   const isWindows = platform() === 'win32'
 
   // 执行基本检查
@@ -228,9 +349,11 @@ function main() {
 
   // 在 Windows 上执行额外检查
   if (isWindows) {
-    console.log(chalk.blue(`\n[THOIFR ${new Date().toLocaleTimeString()}] 正在检查 Windows 开发环境...\n`))
-    const windowsResults = windowsChecks.map(checkWindowsDependency)
-    results.push(...windowsResults)
+    console.log(chalk.blue(`\n[HuLa ${new Date().toLocaleTimeString()}] 正在检查 Windows 开发环境...\n`))
+    for (const check of windowsChecks) {
+      const result = await checkWindowsDependency(check)
+      results.push(result)
+    }
   }
 
   if (results.every(Boolean)) {
@@ -242,4 +365,8 @@ function main() {
   }
 }
 
-main()
+main().catch((error) => {
+  console.error(chalk.red('检查过程中发生错误：'))
+  console.error(chalk.yellow(error.stack || error))
+  process.exit(1)
+})

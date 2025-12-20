@@ -25,13 +25,12 @@ import {
   OnlineEnum,
   RoomTypeEnum
 } from '@/enums'
-import { useFixedScale } from '@/hooks/useFixedScale'
 import { useGlobalShortcut } from '@/hooks/useGlobalShortcut.ts'
 import { useMitt } from '@/hooks/useMitt.ts'
 import { useWindow } from '@/hooks/useWindow.ts'
 import { useGlobalStore } from '@/stores/global'
 import { useSettingStore } from '@/stores/setting.ts'
-import { isDesktop, isIOS, isMobile, isWindows, isWindows10 } from '@/utils/PlatformConstants'
+import { isDesktop, isIOS, isMobile, isWindows10 } from '@/utils/PlatformConstants'
 import LockScreen from '@/views/LockScreen.vue'
 import { unreadCountManager } from '@/utils/UnreadCountManager'
 import {
@@ -75,13 +74,6 @@ const settingStore = useSettingStore()
 const { themes, lockScreen, page, login } = storeToRefs(settingStore)
 // 全局快捷键管理
 const { initializeGlobalShortcut, cleanupGlobalShortcut } = useGlobalShortcut()
-
-// 创建固定缩放控制器（使用 #app-container 作为目标，避免影响浮层定位）
-const fixedScale = useFixedScale({
-  target: '#app-container',
-  mode: 'transform',
-  enableWindowsTextScaleDetection: true
-})
 
 /** 不需要锁屏的页面 */
 const LockExclusion = new Set(['/login', '/tray', '/qrCode', '/about', '/onlineStatus', '/capture'])
@@ -151,7 +143,7 @@ useMitt.on(
     globalStore.unReadMark.newFriendUnreadCount = data.unReadCount4Friend || 0
     globalStore.unReadMark.newGroupUnreadCount = data.unReadCount4Group || 0
 
-    unreadCountManager.refreshBadge(globalStore.unReadMark)
+    unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
 
     // 刷新好友申请列表
     await contactStore.getApplyPage('friend', true)
@@ -266,7 +258,7 @@ useMitt.on(WsResponseMessageType.REQUEST_APPROVAL_FRIEND, async () => {
   // 刷新好友列表以获取最新状态
   await contactStore.getContactList(true)
   await contactStore.getApplyUnReadCount()
-  unreadCountManager.refreshBadge(globalStore.unReadMark)
+  unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
 })
 
 useMitt.on(WsResponseMessageType.ROOM_INFO_CHANGE, async (data: { roomId: string; name: string; avatar: string }) => {
@@ -350,16 +342,14 @@ useMitt.on(WsResponseMessageType.ONLINE, async (onStatusChangeType: OnStatusChan
       onlineNum: onStatusChangeType.onlineNum,
       isAdd: true
     })
-    if (onStatusChangeType) {
-      groupStore.updateUserItem(
-        onStatusChangeType.uid,
-        {
-          activeStatus: OnlineEnum.ONLINE,
-          lastOptTime: onStatusChangeType.lastOptTime
-        },
-        onStatusChangeType.roomId
-      )
-    }
+    groupStore.updateUserItem(
+      onStatusChangeType.uid,
+      {
+        activeStatus: OnlineEnum.ONLINE,
+        lastOptTime: onStatusChangeType.lastOptTime
+      },
+      onStatusChangeType.roomId
+    )
   }
 })
 
@@ -385,8 +375,8 @@ useMitt.on(WsResponseMessageType.USER_STATE_CHANGE, async (data: { uid: string; 
 useMitt.on(WsResponseMessageType.FEED_SEND_MSG, (data: { uid: string }) => {
   if (data.uid !== userStore.userInfo!.uid) {
     feedStore.increaseUnreadCount()
-    // 同步更新角标
-    unreadCountManager.refreshBadge(globalStore.unReadMark)
+    // 同步更新角标（包含朋友圈未读数）
+    unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
   } else {
     console.log('[App.vue] 是自己发布的，不增加未读数')
   }
@@ -468,6 +458,8 @@ useMitt.on(WsResponseMessageType.FEED_NOTIFY, async (data: any) => {
       }
       feedNotificationStore.addNotification(commentNotification)
     }
+    // 朋友圈未读数变化后，同步更新程序坞图标（包含朋友圈未读数）
+    unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
   } catch (error) {
     console.error('处理朋友圈通知失败:', error)
   }
@@ -487,16 +479,14 @@ useMitt.on(WsResponseMessageType.OFFLINE, async (onStatusChangeType: OnStatusCha
       onlineNum: onStatusChangeType.onlineNum,
       isAdd: false
     })
-    if (onStatusChangeType) {
-      groupStore.updateUserItem(
-        onStatusChangeType.uid,
-        {
-          activeStatus: OnlineEnum.OFFLINE,
-          lastOptTime: onStatusChangeType.lastOptTime
-        },
-        onStatusChangeType.roomId
-      )
-    }
+    groupStore.updateUserItem(
+      onStatusChangeType.uid,
+      {
+        activeStatus: OnlineEnum.OFFLINE,
+        lastOptTime: onStatusChangeType.lastOptTime
+      },
+      onStatusChangeType.roomId
+    )
   }
 })
 
@@ -584,7 +574,8 @@ const handleWebsocketEvent = async (event: any) => {
   lastWsConnectionState = nextState || previousState
 
   if (!shouldHandleReconnect) return
-  if (isReconnectInFlight) return
+  // 防止并行重连/同步导致 syncLoading 卡死
+  if (isReconnectInFlight || chatStore.syncLoading) return
   isReconnectInFlight = true
 
   // 开始同步，显示加载状态
@@ -600,18 +591,19 @@ const handleWebsocketEvent = async (event: any) => {
     if (globalStore.currentSessionRoomId) {
       await chatStore.resetAndRefreshCurrentRoomMessages()
       await chatStore.fetchCurrentRoomRemoteOnce(20)
-      const currentSession = chatStore.getSession(globalStore.currentSessionRoomId)
+      const currentRoomId = globalStore.currentSessionRoomId
+      const currentSession = chatStore.getSession(currentRoomId)
       // 重连后如果当前会话仍有未读，补一次已读上报和本地清零，避免气泡卡住
       if (currentSession?.unreadCount) {
         try {
-          await ImRequestUtils.markMsgRead(currentSession.roomId)
+          await ImRequestUtils.markMsgRead(currentRoomId)
         } catch (error) {
           console.error('[Network] 重连后上报已读失败:', error)
         }
-        chatStore.markSessionRead(currentSession.roomId)
+        chatStore.markSessionRead(currentRoomId)
       }
     }
-    unreadCountManager.refreshBadge(globalStore.unReadMark)
+    unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
   } finally {
     // 同步完成，隐藏加载状态
     chatStore.syncLoading = false
@@ -636,10 +628,6 @@ onMounted(() => {
     requestNetworkPermissionForIOS()
   }
 
-  // 仅在windows上使用
-  if (isWindows()) {
-    fixedScale.enable()
-  }
   if (isWindows10()) {
     void appWindow.setShadow(false).catch((error) => {
       console.warn('禁用窗口阴影失败:', error)
@@ -696,9 +684,6 @@ onMounted(() => {
 })
 
 onUnmounted(async () => {
-  // 关闭固定缩放，恢复样式与监听
-  fixedScale.disable()
-
   window.removeEventListener('contextmenu', preventGlobalContextMenu, false)
   window.removeEventListener('dragstart', preventDrag)
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "THOIFR",
-  "version": "3.0.6",
-  "identifier": "com.thoifr.app",
+  "version": "3.0.7",
+  "identifier": "com.thoifr.pc",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
@@ -69,6 +69,7 @@
       },
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQxNjY2MTM0M0RDOEFGODMKUldTRHI4ZzlOR0ZtUVFldmdBaHFzdFExSnBWTWVqb1ZINEFQeFpLcFNXRFZ2QnJxdFpFdUhkeFQK",
       "endpoints": [
+        "https://api.upgrade.toolsetlink.com/v1/tauri/upgrade?tauriKey=geShj8UB7zd1DyrM_YFNdg&versionName={{current_version}}&appointVersionName=&devModelKey=&devKey=&target={{target}}&arch={{arch}}",
         "https://gitee.com/catkin-T/THOIFR/releases/download/latest/latest.json"
       ]
     }

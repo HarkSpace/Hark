@@ -5,6 +5,16 @@
       <n-spin :size="14" />
       <span>{{ t('message.message_list.sync_loading') }}</span>
     </div>
+    <!-- 当右侧 chatBox 未展示且网络离线时，在列表区域提示网络状态 -->
+    <div
+      v-if="!networkStatus.isOnline.value && !syncLoading && !globalStore.currentSessionRoomId"
+      class="mx-10px mt-6px border-(1px solid [--danger-text]) flex items-center gap-8px rounded-6px bg-[--danger-bg] px-12px py-10px text-(12px [--danger-text])"
+      style="position: sticky; top: 6px; z-index: 999">
+      <svg class="size-16px flex-shrink-0">
+        <use href="#cloudError"></use>
+      </svg>
+      <span class="leading-tight">{{ t('home.chat_main.network_offline') }}</span>
+    </div>
     <!--  会话列表  -->
     <div v-if="sessionList.length > 0" class="p-[4px_10px_0px_8px]">
       <ContextMenu
@@ -162,11 +172,14 @@ import { useGlobalStore } from '@/stores/global.ts'
 import { useGroupStore } from '@/stores/group.ts'
 import { useSettingStore } from '@/stores/setting'
 import { useBotStore } from '@/stores/bot'
+import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { AvatarUtils } from '@/utils/AvatarUtils'
 import { formatTimestamp } from '@/utils/ComputedTime.ts'
+import { markMsgRead } from '@/utils/ImRequestUtils'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const route = useRoute()
 const appWindow = WebviewWindow.getCurrent()
 const chatStore = useChatStore()
 const globalStore = useGlobalStore()
@@ -183,6 +196,9 @@ const msgScrollbar = useTemplateRef<HTMLElement>('msg-scrollbar')
 const { handleMsgClick, handleMsgDelete, handleMsgDblclick, visibleMenu, visibleSpecialMenu } = useMessage()
 // 跟踪当前显示右键菜单的会话ID
 const activeContextMenuRoomId = ref<string | null>(null)
+const networkStatus = useNetworkStatus()
+// 未读清空的定时器
+let clearUnreadTimer: NodeJS.Timeout | null = null
 
 type SessionMsgCacheItem = { msg: string; isAtMe: boolean; time: number; senderName: string }
 
@@ -272,7 +288,7 @@ const sessionList = computed(() => {
           ...item,
           avatar: latestAvatar,
           name: displayName,
-          lastMsg: displayMsg || '欢迎使用THOIFR',
+          lastMsg: displayMsg || '欢迎使用HuLa',
           lastMsgTime: formatTimestamp(item?.activeTime),
           isAtMe
         }
@@ -311,6 +327,41 @@ watch(
         // 非群聊直接传递原始信息
         const sessionItem = newVal as SessionItem
         handleMsgClick(sessionItem)
+      }
+    }
+  },
+  { immediate: true }
+)
+
+// 监听路由变化：当切换回/message页面且有选中会话时，延迟2秒后清空未读并上报
+watch(
+  () => route.path,
+  async (newPath) => {
+    // 清理之前的定时器
+    if (clearUnreadTimer) {
+      clearTimeout(clearUnreadTimer)
+      clearUnreadTimer = null
+    }
+
+    // 只在路由切换到/message时处理
+    if (newPath === '/message') {
+      // 检查是否有选中的会话
+      const currentRoomId = globalStore.currentSessionRoomId
+      if (currentRoomId) {
+        const session = chatStore.getSession(currentRoomId)
+        // 如果选中的会话有未读数，则延迟2秒后清空并上报
+        if (session?.unreadCount && session.unreadCount > 0) {
+          clearUnreadTimer = setTimeout(async () => {
+            chatStore.markSessionRead(currentRoomId)
+            // 调用已读上报接口
+            try {
+              await markMsgRead(currentRoomId)
+            } catch (error) {
+              console.error('[message] 路由切换时已读上报失败:', error)
+            }
+            clearUnreadTimer = null
+          }, 2000) // 等待2秒
+        }
       }
     }
   },
@@ -376,6 +427,14 @@ onMounted(async () => {
       })
     }
   })
+})
+
+onUnmounted(() => {
+  // 清理未读清空的定时器，避免内存泄漏
+  if (clearUnreadTimer) {
+    clearTimeout(clearUnreadTimer)
+    clearUnreadTimer = null
+  }
 })
 </script>
 

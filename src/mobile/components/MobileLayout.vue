@@ -5,7 +5,7 @@
     :class="{
       'bg-cover bg-center bg-no-repeat': props.backgroundImage
     }"
-    :style="backgroundImageStyle">
+    :style="mergedStyle">
     <!-- 顶部安全区域 -->
     <div :class="[{ 'safe-area-top': safeAreaTop }, props.topSafeAreaClass]" />
 
@@ -94,6 +94,11 @@ const backgroundImageStyle = computed(() => {
   return styles
 })
 
+const mergedStyle = computed(() => ({
+  backgroundColor: 'var(--center-bg-color)',
+  ...backgroundImageStyle.value
+}))
+
 /**
  * 从消息中提取文件信息并添加到 file store
  */
@@ -156,8 +161,10 @@ useMitt.on(WsResponseMessageType.RECEIVE_MESSAGE, async (data: MessageType) => {
     return
   }
   console.log('[mobile/layout] 收到的消息：', data)
+  // 只有在聊天室页面且当前选中的会话就是消息来源的会话时，才不增加未读数
   chatStore.pushMsg(data, {
-    isActiveChatView: route.path.startsWith('/mobile/chatRoom'),
+    isActiveChatView:
+      route.path.startsWith('/mobile/chatRoom') && globalStore.currentSessionRoomId === data.message.roomId,
     activeRoomId: globalStore.currentSessionRoomId || ''
   })
   data.message.sendTime = new Date(data.message.sendTime).getTime()

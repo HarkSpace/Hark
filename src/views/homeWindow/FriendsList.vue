@@ -117,7 +117,6 @@
   </n-tabs>
 </template>
 <script setup lang="ts" name="friendsList">
-import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -125,6 +124,7 @@ import { MittEnum, OnlineEnum, RoomTypeEnum, ThemeEnum, UserType } from '@/enums
 import { useMitt } from '@/hooks/useMitt.ts'
 import type { DetailsContent } from '@/services/types'
 import { useContactStore } from '@/stores/contacts.ts'
+import { useFeedStore } from '@/stores/feed'
 import { useGlobalStore } from '@/stores/global.ts'
 import { useGroupStore } from '@/stores/group'
 import { useSettingStore } from '@/stores/setting'
@@ -144,6 +144,7 @@ const activeItem = ref('')
 const detailsShow = ref(false)
 const shrinkStatus = ref(false)
 const contactStore = useContactStore()
+const feedStore = useFeedStore()
 const groupStore = useGroupStore()
 const globalStore = useGlobalStore()
 const userStatusStore = useUserStatusStore()
@@ -174,12 +175,6 @@ const sortedContacts = computed(() => {
     if (a.activeStatus === OnlineEnum.ONLINE && b.activeStatus !== OnlineEnum.ONLINE) return -1
     if (a.activeStatus !== OnlineEnum.ONLINE && b.activeStatus === OnlineEnum.ONLINE) return 1
     return 0
-  })
-})
-/** 监听独立窗口关闭事件 */
-watchEffect(() => {
-  useMitt.on(MittEnum.SHRINK_WINDOW, async (event) => {
-    shrinkStatus.value = event as boolean
   })
 })
 
@@ -223,7 +218,7 @@ const handleApply = async (applyType: 'friend' | 'group') => {
   } else {
     globalStore.unReadMark.newGroupUnreadCount = 0
   }
-  unreadCountManager.refreshBadge(globalStore.unReadMark)
+  unreadCountManager.refreshBadge(globalStore.unReadMark, feedStore.unreadCount)
 
   useMitt.emit(MittEnum.APPLY_SHOW, {
     context: {
@@ -276,6 +271,9 @@ watch(
 
 /** 组件挂载时获取数据 */
 onMounted(async () => {
+  useMitt.on(MittEnum.SHRINK_WINDOW, async (event) => {
+    shrinkStatus.value = event as boolean
+  })
   await fetchContactData()
 })
 
