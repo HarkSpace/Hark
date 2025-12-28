@@ -9,7 +9,7 @@
       <n-badge
         class="flex flex-col w-55% flex-1 relative items-center"
         :offset="[-6, 6]"
-        color="red"
+        color="#c14053"
         :value="getUnReadCount(item.label)"
         :max="99">
         <svg class="w-22px h-22px">
@@ -23,7 +23,9 @@
 
 <script setup lang="ts">
 import { useFeedStore } from '@/stores/feed'
+import { useGlobalStore } from '@/stores/global'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 type NavItem = {
   label: string
@@ -32,45 +34,48 @@ type NavItem = {
   actionIcon: string
 }
 
+const { t } = useI18n()
 const route = useRoute()
 const feedStore = useFeedStore()
 const { unreadCount: feedUnreadCount } = storeToRefs(feedStore)
+const globalStore = useGlobalStore()
 
 const getUnReadCount = (label: string) => {
+  if (label === '消息') {
+    return globalStore.unReadMark.newMsgUnreadCount
+  }
+  if (label === t('mobile_tabbar.items.contacts')) {
+    return globalStore.unReadMark.newFriendUnreadCount + globalStore.unReadMark.newGroupUnreadCount
+  }
   if (label === '社区') {
     return feedUnreadCount.value
   }
   return 0
 
-  // 其他未读计数暂时关闭（message页面有问题）
-  // if (label === '消息') {
-  //   return unReadMark.value.newMsgUnreadCount
-  // } else if (label === '联系人') {
-  //   return unReadMark.value.newFriendUnreadCount
-  // }
+  // 其他未读计数暂时关闭
 }
 
 const navItems: NavItem[] = [
   {
-    label: '消息',
+    label: t('mobile_tabbar.items.messages'),
     path: '/mobile/message',
     icon: 'message',
     actionIcon: 'message-action'
   },
   {
-    label: '联系人',
+    label: t('mobile_tabbar.items.contacts'),
     path: '/mobile/friends',
     icon: 'avatar',
     actionIcon: 'avatar-action'
   },
   {
-    label: '社区',
+    label: t('mobile_tabbar.items.community'),
     path: '/mobile/community',
     icon: 'fire',
     actionIcon: 'fire-action'
   },
   {
-    label: '我的',
+    label: t('mobile_tabbar.items.me'),
     path: '/mobile/my',
     icon: 'wode',
     actionIcon: 'wode-action'

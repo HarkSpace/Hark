@@ -1,19 +1,19 @@
 {
   "$schema": "https://json.schemastore.org/jsconfig",
-  "name": "thoifr",
+  "name": "hula",
   "type": "module",
   "version": "3.0.7",
   "license": "Apache-2.0",
   "engines": {
     "node": "^20.19.0 || >=22.12.0",
-    "pnpm": ">=10.x"
+    "pnpm": ">=10"
   },
   "repository": {
     "url": "https://github.com/HuLaSpark/HuLa.git"
   },
   "author": {
-    "name": "THOIFR团队",
-    "email": "1906216170@qq.com",
+    "name": "HuLaSpark团队",
+    "email": "2439646234@qq.com",
     "url": "https://github.com/HuLaSpark"
   },
   "scripts": {
@@ -21,9 +21,9 @@
     "dev": "vite",
     "========= 打包vue(tauri项目会连带执行不需要单独执行) =========": "",
     "build": "vue-tsc --noEmit && vite build",
-    "========= 启动THOIFR桌面应用程序 =========": "",
+    "========= 启动HuLa桌面应用程序 =========": "",
     "tauri:dev": "tauri dev",
-    "========= 启动THOIFR桌面应用程序(简化命令) =========": "",
+    "========= 启动HuLa桌面应用程序(简化命令) =========": "",
     "td": "tauri dev",
     "========= windows中启动安卓纯前端(简化命令) =========": "",
     "adev:win": "set TAURI_ENV_PLATFORM=android&& vite",
@@ -35,13 +35,11 @@
     "idev": "tauri ios dev",
     "========= 打包桌面应用程序(简化命令) =========": "",
     "tb": "node scripts/interactive-build-inquirer.js",
-    "========= macOS使用系统keychain的密钥启动 =========": "",
-    "td:keychain": "HULA_SQLCIPHER_USE_KEYCHAIN=1 pnpm td",
     "========= 打包桌面应用程序 =========": "",
     "tauri:build": "node scripts/interactive-build-inquirer.js",
-    "========= 启动THOIFR ios 程序 =========": "",
+    "========= 启动HuLa ios 程序 =========": "",
     "tauri:ios:dev": "tauri ios dev",
-    "========= 启动THOIFR android 程序 =========": "",
+    "========= 启动HuLa android 程序 =========": "",
     "tauri:android:dev": "tauri android dev",
     "========= 生成icon =========": "",
     "tauri:icon": "tauri icon public/light.png",
@@ -176,7 +174,8 @@
     "vite-plugin-vue-setup-extend": "^0.4.0",
     "vitest": "^4.0.15",
     "vue-tsc": "^3.1.5",
-    "web-vitals": "^5.1.0"
+    "web-vitals": "^5.1.0",
+    "eruda": "^3.4.3"
   },
   "config": {
     "commitizen": {

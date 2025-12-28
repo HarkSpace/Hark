@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-full flex-1">
-    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="THOIFR" />
+    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="hula" />
 
     <!-- 页面蒙板 -->
     <div
@@ -11,7 +11,7 @@
 
     <!-- 导航条 -->
     <NavBar>
-      <template #center>通讯录</template>
+      <template #center>{{ t('mobile_contact.title') }}</template>
       <template #right>
         <n-dropdown
           @on-clickoutside="addIconHandler.clickOutside"
@@ -37,7 +37,7 @@
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
-        :placeholder="'搜索'">
+        :placeholder="t('mobile_contact.input.search')">
         <template #prefix>
           <svg class="w-12px h-12px"><use href="#search"></use></svg>
         </template>
@@ -46,17 +46,15 @@
 
     <div class="flex flex-1 gap-2 flex-col bg-white z-1 custom-rounded">
       <!-- 我的消息条 -->
-      <div class="grid grid-cols-[4rem_1fr_24px] py-15px px-16px border-b-[1px] border-b-solid border-b-[#e5e7eb]">
-        <div class="h-full flex items-center text-14px">我的消息</div>
-        <div @click="toMessage" class="h-full flex items-center justify-end overflow-hidden">
-          <n-avatar
-            v-if="contactStore.requestFriendsList.length > 0"
-            :class="index > 0 ? '-ml-2' : ''"
-            v-for="(avatar, index) in avatars"
-            :key="avatar"
-            round
-            size="small"
-            :src="avatar" />
+      <div
+        class="grid grid-cols-[4rem_1fr_24px] items-center gap-8px py-15px px-16px border-b-[1px] border-b-solid border-b-[#e5e7eb]">
+        <div class="h-full flex items-center text-14px">{{ t('mobile_contact.my_chat') }}</div>
+        <div @click="toMessage" class="h-full flex items-center justify-end">
+          <span
+            v-if="contactUnreadCount > 0"
+            class="px-4px py-4px rounded-999px bg-#c14053 text-white text-12px font-600 min-w-20px text-center">
+            {{ contactUnreadCount > 99 ? '99+' : contactUnreadCount }}
+          </span>
         </div>
         <div @click="toMessage" class="h-full flex justify-end items-center">
           <img src="@/assets/mobile/friend/right-arrow.webp" class="block h-20px" alt="" />
@@ -64,10 +62,10 @@
       </div>
 
       <n-tabs type="segment" animated class="mt-4px p-[4px_10px_0px_8px]">
-        <n-tab-pane name="1" tab="好友">
+        <n-tab-pane name="1" :tab="t('mobile_contact.tab.contacts')">
           <n-collapse :display-directive="'show'" accordion :default-expanded-names="['1']">
             <ContextMenu @contextmenu="showMenu($event)" @select="handleSelect($event.label)" :menu="menuList">
-              <n-collapse-item title="我的好友" name="1">
+              <n-collapse-item :title="t('mobile_contact.friend.title')" name="1">
                 <template #header-extra>
                   <span class="text-(10px #707070)">{{ onlineCount }}/{{ contactStore.contactsList.length }}</span>
                 </template>
@@ -118,9 +116,9 @@
             </ContextMenu>
           </n-collapse>
         </n-tab-pane>
-        <n-tab-pane name="2" tab="群聊">
+        <n-tab-pane name="2" :tab="t('mobile_contact.tab.group')">
           <n-collapse :display-directive="'show'" accordion :default-expanded-names="['1']">
-            <n-collapse-item title="我的群聊" name="1">
+            <n-collapse-item :title="t('mobile_contact.group.title')" name="1">
               <template #header-extra>
                 <span class="text-(10px #707070)">{{ groupChatList.length }}</span>
               </template>
@@ -168,49 +166,13 @@ import { useMessage } from '@/hooks/useMessage.ts'
 import { useMitt } from '@/hooks/useMitt.ts'
 import router from '@/router'
 import { useContactStore } from '@/stores/contacts.ts'
+import { useGlobalStore } from '@/stores/global'
 import { useGroupStore } from '@/stores/group'
 import { useUserStatusStore } from '@/stores/userStatus'
 import { AvatarUtils } from '@/utils/AvatarUtils'
-import { NoticeType } from '@/services/types'
+import { useI18n } from 'vue-i18n'
 
-/**
- * 获取当前用户查询视角
- * @param item 通知消息
- */
-const getUserInfo = (item: any) => {
-  switch (item.eventType) {
-    case NoticeType.FRIEND_APPLY:
-    case NoticeType.GROUP_INVITE:
-    case NoticeType.GROUP_MEMBER_DELETE: {
-      return groupStore.getUserInfo(item.operateId)!
-    }
-    case NoticeType.ADD_ME:
-    case NoticeType.GROUP_INVITE_ME:
-    case NoticeType.GROUP_SET_ADMIN:
-    case NoticeType.GROUP_APPLY:
-    case NoticeType.GROUP_RECALL_ADMIN: {
-      return groupStore.getUserInfo(item.senderId)!
-    }
-  }
-}
-
-const avatars = computed(() => {
-  const seen = new Set()
-  const unique = []
-
-  for (const item of contactStore.requestFriendsList) {
-    const avatar = avatarSrc(getUserInfo(item)!.avatar!)
-    if (!seen.has(avatar)) {
-      seen.add(avatar)
-      unique.push(avatar)
-    }
-
-    if (unique.length >= 6) break
-  }
-
-  return unique
-})
-
+const { t } = useI18n()
 /**
  * 渲染图片图标的函数工厂
  * @param {string} src - 图标图片路径
@@ -231,12 +193,12 @@ const renderImgIcon = (src: string) => {
 const uiViewsData = ref({
   addOptions: [
     {
-      label: '发起群聊',
+      label: t('menu.start_group_chat'),
       key: '/mobile/mobileFriends/startGroupChat',
       icon: renderImgIcon(groupChatIcon)
     },
     {
-      label: '加好友/群',
+      label: t('menu.add_contact'),
       key: '/mobile/mobileFriends/addFriends',
       icon: renderImgIcon(addFriendIcon)
     }
@@ -253,14 +215,25 @@ const activeItem = ref('')
 const detailsShow = ref(false)
 const shrinkStatus = ref(false)
 const groupStore = useGroupStore()
+const globalStore = useGlobalStore()
 const contactStore = useContactStore()
 const userStatusStore = useUserStatusStore()
 const { stateList } = storeToRefs(userStatusStore)
 
-const avatarSrc = (url: string) => AvatarUtils.getAvatarUrl(url)
+const contactUnreadCount = computed(
+  () => globalStore.unReadMark.newFriendUnreadCount + globalStore.unReadMark.newGroupUnreadCount
+)
 
-const toMessage = () => {
-  router.push('/mobile/mobileMy/myMessages')
+const toMessage = async () => {
+  try {
+    await Promise.all([contactStore.getApplyPage('friend', true, true), contactStore.getApplyPage('group', true, true)])
+    await contactStore.getApplyUnReadCount()
+  } catch (error) {
+    console.error('刷新通知并标记已读失败', error)
+    window.$message?.error?.('刷新通知失败，请稍后再试')
+  } finally {
+    router.push('/mobile/mobileMy/myMessages')
+  }
 }
 
 /** 群聊列表 */

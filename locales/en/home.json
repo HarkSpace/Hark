@@ -204,7 +204,18 @@
       }
     },
     "qr": {
-      "tip": "Scan the code to join"
+      "tip": "Scan the QR code to join",
+      "group_id_label": "Group ID: ",
+      "actions": {
+        "forward": "Forward",
+        "copy_group_id": "Copy group ID",
+        "save_image": "Save image"
+      },
+      "toast": {
+        "group_id_copied": "Group ID copied",
+        "save_success": "Image saved",
+        "save_failed": "Save failed"
+      }
     },
     "toast": {
       "copy_success": "Copied {account}",
@@ -274,7 +285,7 @@
     "modal": {
       "add_friend": "Add friend request"
     },
-    "developer_badge": "THOIFR Developer"
+    "developer_badge": "HuLa Developer"
   },
   "profile_edit": {
     "title": "Edit profile",
@@ -325,7 +336,7 @@
   "about": {
     "version": "Version: {version} ({arch})",
     "device": "Device: {type}{version}",
-    "copyright": "Copyright © {start}-{end} THOIFR",
+    "copyright": "Copyright © {start}-{end} HuLaSpark",
     "rights": "All Rights Reserved."
   },
   "apply_list": {
@@ -367,6 +378,8 @@
   },
   "chat_main": {
     "network_offline": "Network unavailable, please check your settings",
+    "network_connecting": "Connecting to server...",
+    "network_ws_offline": "Server connection lost, retrying",
     "announcement": {
       "view_all": "View all"
     },
@@ -413,5 +426,9 @@
     "success": "Group chat created",
     "fail": "Failed to create group chat",
     "required_tag": "Required"
+  },
+  "file_drop": {
+    "title": "Release to send files",
+    "desc": "Drag and drop images or files, the current session will receive them"
   }
 }

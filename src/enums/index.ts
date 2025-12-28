@@ -116,6 +116,8 @@ export enum MittEnum {
   MOBILE_RTC_CALL_REQUEST = 'mobileRtcCallRequest',
   /** 移动端关闭输入框面板 */
   MOBILE_CLOSE_PANEL = 'mobileClosePanel',
+  /** 全局文件拖拽 */
+  GLOBAL_FILES_DROP = 'globalFilesDrop',
   /** 切换会话 */
   MSG_INIT = 'msg_init',
   /** 会话切换完成*/
@@ -569,7 +571,11 @@ export enum TauriCommand {
   /** AI 消息流式发送 */
   AI_MESSAGE_SEND_STREAM = 'ai_message_send_stream',
   /** 生成 MinIO 预签名 URL */
-  GENERATE_MINIO_PRESIGNED_URL = 'generate_minio_presigned_url'
+  GENERATE_MINIO_PRESIGNED_URL = 'generate_minio_presigned_url',
+  /** 通过 Rust 端 PUT 上传本地文件 */
+  UPLOAD_FILE_PUT = 'upload_file_put',
+  /** 通过 Rust 端七牛分片上传本地文件 */
+  QINIU_UPLOAD_RESUMABLE = 'qiniu_upload_resumable'
 }
 
 // 通话状态枚举

@@ -2,16 +2,15 @@
 #[cfg(desktop)]
 mod desktops;
 use crate::common::files_meta::get_files_meta;
-#[cfg(desktop)]
-use common::init::CustomInit;
+use crate::common::init::CustomInit;
 #[cfg(target_os = "windows")]
 use common_cmd::get_windows_scale_info;
 #[cfg(desktop)]
 use common_cmd::{audio, default_window_icon, screenshot, set_height};
 #[cfg(target_os = "macos")]
 use common_cmd::{
-    hide_title_bar_buttons, set_window_level_above_menubar, set_window_movable,
-    show_title_bar_buttons,
+    hide_title_bar_buttons, set_macos_traffic_lights_spacing, set_window_level_above_menubar,
+    set_window_movable, show_title_bar_buttons,
 };
 #[cfg(target_os = "macos")]
 use desktops::app_event;
@@ -54,9 +53,9 @@ use serde::{Deserialize, Serialize};
 
 // 移动端依赖
 #[cfg(mobile)]
-use common::init::CustomInit;
-#[cfg(mobile)]
 mod mobiles;
+#[cfg(target_os = "ios")]
+use mobiles::ios::badge::{request_ios_badge_authorization, set_ios_badge};
 #[cfg(mobile)]
 use mobiles::splash;
 
@@ -385,6 +384,7 @@ fn get_invoke_handlers() -> impl Fn(tauri::ipc::Invoke<tauri::Wry>) -> bool + Se
     use crate::command::markdown_command::{get_readme_html, parse_markdown};
     #[cfg(mobile)]
     use crate::command::set_complete;
+    use crate::command::upload_command::{qiniu_upload_resumable, upload_file_put};
     use crate::command::user_command::{
         get_user_tokens, save_user_info, update_token, update_user_last_opt_time,
     };
@@ -414,6 +414,8 @@ fn get_invoke_handlers() -> impl Fn(tauri::ipc::Invoke<tauri::Wry>) -> bool + Se
         hide_title_bar_buttons,
         #[cfg(target_os = "macos")]
         show_title_bar_buttons,
+        #[cfg(target_os = "macos")]
+        set_macos_traffic_lights_spacing,
         #[cfg(target_os = "macos")]
         set_window_level_above_menubar,
         #[cfg(target_os = "macos")]
@@ -476,10 +478,16 @@ fn get_invoke_handlers() -> impl Fn(tauri::ipc::Invoke<tauri::Wry>) -> bool + Se
         // Markdown 相关命令
         parse_markdown,
         get_readme_html,
+        upload_file_put,
+        qiniu_upload_resumable,
         #[cfg(mobile)]
         set_complete,
         #[cfg(mobile)]
         hide_splash_screen,
+        #[cfg(target_os = "ios")]
+        set_ios_badge,
+        #[cfg(target_os = "ios")]
+        request_ios_badge_authorization,
         #[cfg(target_os = "ios")]
         set_webview_keyboard_adjustment,
         is_app_state_ready,

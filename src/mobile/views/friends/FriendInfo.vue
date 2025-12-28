@@ -7,7 +7,7 @@
       :enable-shadow="false"
       room-name="用户资料" />
 
-    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="THOIFR" />
+    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="hula" />
 
     <PersonalInfo :is-my-page="isMyPage" :is-show="isShow"></PersonalInfo>
 

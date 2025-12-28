@@ -69,7 +69,7 @@
 
     <div class="bot-content">
       <n-loading-bar-provider ref="loadingBarRef" :to="false" :container-style="loadingBarContainerStyle">
-        <!-- THOIFR 小管家 3D 模型 -->
+        <!-- HuLa 小管家 3D 模型 -->
         <HuLaAssistant
           v-if="isAssistantView"
           :active="isAssistantView"

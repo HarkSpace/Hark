@@ -204,7 +204,18 @@
       }
     },
     "qr": {
-      "tip": "扫描二维码加入群聊"
+      "tip": "扫描二维码加入群聊",
+      "group_id_label": "群号：",
+      "actions": {
+        "forward": "转发",
+        "copy_group_id": "复制群号",
+        "save_image": "保存图片"
+      },
+      "toast": {
+        "group_id_copied": "群号已复制",
+        "save_success": "图片已保存",
+        "save_failed": "保存失败"
+      }
     },
     "toast": {
       "copy_success": "复制成功 {account}",
@@ -273,7 +284,7 @@
     "modal": {
       "add_friend": "申请加好友"
     },
-    "developer_badge": "THOIFR开发工程师"
+    "developer_badge": "HuLa开发工程师"
   },
   "profile_edit": {
     "title": "编辑资料",
@@ -324,7 +335,7 @@
   "about": {
     "version": "版本：{version} ({arch})",
     "device": "当前设备：{type}{version}",
-    "copyright": "Copyright © {start}-{end} THOIFR",
+    "copyright": "Copyright © {start}-{end} HuLaSpark",
     "rights": "All Rights Reserved."
   },
   "apply_list": {
@@ -366,6 +377,8 @@
   },
   "chat_main": {
     "network_offline": "当前网络不可用，请检查你的网络设置",
+    "network_connecting": "正在连接服务器...",
+    "network_ws_offline": "服务器连接已断开，正在重试",
     "announcement": {
       "view_all": "查看全部"
     },
@@ -412,5 +425,9 @@
     "success": "创建群聊成功",
     "fail": "创建群聊失败",
     "required_tag": "必选"
+  },
+  "file_drop": {
+    "title": "松开鼠标即可发送文件",
+    "desc": "支持拖拽多张图片或文件，当前会话将收到这些文件"
   }
 }

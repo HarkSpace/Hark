@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col bg-gray-100">
-    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% absolute top-0 z-1" alt="THOIFR" />
+    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% absolute top-0 z-1" alt="hula" />
 
     <HeaderBar
       :isOfficial="false"

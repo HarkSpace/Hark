@@ -62,29 +62,68 @@ const resolveNaiveLocale = (lang: string): NaiveLocalePack => naiveLocaleMap[lan
 const currentNaiveLocale = computed(() => resolveNaiveLocale(locale.value).locale)
 const currentNaiveDateLocale = computed(() => resolveNaiveLocale(locale.value).dateLocale)
 /**监听深色主题颜色变化*/
-const globalTheme = ref<any>(themes.value.content)
+const globalTheme = ref<any>(themes.value.content === ThemeEnum.DARK ? darkTheme : lightTheme)
 const prefers = matchMedia('(prefers-color-scheme: dark)')
 // 定义不需要显示消息提示的窗口
 const noMessageWindows = ['tray', 'notify', 'capture', 'update', 'checkupdate']
 
-/** 跟随系统主题模式切换主题 */
-const followOS = () => {
-  globalTheme.value = prefers.matches ? darkTheme : lightTheme
-  document.documentElement.dataset.theme = prefers.matches ? ThemeEnum.DARK : ThemeEnum.LIGHT
-  themes.value.content = prefers.matches ? ThemeEnum.DARK : ThemeEnum.LIGHT
+const isValidContent = (theme?: string) => theme === ThemeEnum.DARK || theme === ThemeEnum.LIGHT
+
+const applyThemeContent = (theme: ThemeEnum) => {
+  globalTheme.value = theme === ThemeEnum.DARK ? darkTheme : lightTheme
+  document.documentElement.dataset.theme = theme
 }
 
-watchEffect(() => {
-  if (themes.value.pattern === ThemeEnum.OS) {
-    followOS()
-    themes.value.pattern = ThemeEnum.OS
-    prefers.addEventListener('change', followOS)
-  } else {
-    // 判断content是否是深色还是浅色
-    document.documentElement.dataset.theme = themes.value.content || ThemeEnum.LIGHT
-    globalTheme.value = themes.value.content === ThemeEnum.DARK ? darkTheme : lightTheme
-    prefers.removeEventListener('change', followOS)
-  }
+const syncOsTheme = () => {
+  if (themes.value.pattern !== ThemeEnum.OS) return
+  settingStore.syncOsTheme()
+}
+
+const handlePrefersChange = () => {
+  syncOsTheme()
+}
+
+let prefersListenerAttached = false
+const attachPrefersListener = () => {
+  if (prefersListenerAttached) return
+  prefers.addEventListener('change', handlePrefersChange)
+  prefersListenerAttached = true
+}
+
+const detachPrefersListener = () => {
+  if (!prefersListenerAttached) return
+  prefers.removeEventListener('change', handlePrefersChange)
+  prefersListenerAttached = false
+}
+
+watch(
+  () => themes.value.pattern,
+  (pattern) => {
+    if (pattern === ThemeEnum.OS) {
+      syncOsTheme()
+      attachPrefersListener()
+      return
+    }
+    detachPrefersListener()
+    settingStore.normalizeThemeState()
+  },
+  { immediate: true }
+)
+
+watch(
+  () => themes.value.content,
+  (content) => {
+    if (!isValidContent(content)) {
+      settingStore.normalizeThemeState()
+      return
+    }
+    applyThemeContent(content as ThemeEnum)
+  },
+  { immediate: true }
+)
+
+onUnmounted(() => {
+  detachPrefersListener()
 })
 
 const commonTheme: GlobalThemeOverrides = {

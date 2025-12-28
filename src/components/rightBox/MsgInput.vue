@@ -248,6 +248,7 @@ import { useSendOptions } from '@/views/moreWindow/settings/config.ts'
 import { useGroupStore } from '@/stores/group'
 import { MobilePanelStateEnum } from '@/enums'
 import { useI18n, I18nT } from 'vue-i18n'
+import type { UploadFile } from '@/utils/FileType'
 
 interface Props {
   isAIMode?: boolean
@@ -281,7 +282,7 @@ const groupStore = useGroupStore()
 
 // 文件上传弹窗状态
 const showFileModal = ref(false)
-const pendingFiles = ref<File[]>([])
+const pendingFiles = ref<UploadFile[]>([])
 
 /** 引入useMsgInput的相关方法 */
 const {
@@ -366,7 +367,7 @@ const handleInternalInput = (e: Event) => {
 }
 
 // 显示文件弹窗的回调函数
-const showFileModalCallback = (files: File[]) => {
+const showFileModalCallback = (files: UploadFile[]) => {
   pendingFiles.value = files
   showFileModal.value = true
 }
@@ -376,7 +377,7 @@ const onPaste = async (e: ClipboardEvent) => {
 }
 
 // 处理弹窗确认
-const handleFileConfirm = async (files: File[]) => {
+const handleFileConfirm = async (files: UploadFile[]) => {
   try {
     await sendFilesDirect(files)
   } catch (error) {
@@ -390,6 +391,17 @@ const handleFileConfirm = async (files: File[]) => {
 const handleFileCancel = () => {
   showFileModal.value = false
   pendingFiles.value = []
+}
+
+// 处理全局拖拽文件
+const handleGlobalFilesDrop = async (files: UploadFile[]) => {
+  if (!files?.length || !messageInputDom.value) return
+  try {
+    await processFiles(files, messageInputDom.value, showFileModalCallback)
+  } catch (error) {
+    console.error('处理拖拽文件失败:', error)
+    window.$message?.error?.('处理拖拽文件失败')
+  }
 }
 
 /** 位置选择完成的回调 */
@@ -670,6 +682,7 @@ defineExpose({
 /** 移动端专用适配事件（结束） */
 
 onMounted(async () => {
+  useMitt.on(MittEnum.GLOBAL_FILES_DROP, handleGlobalFilesDrop)
   if (isMobile()) {
     listenMobileClosePanel()
   }
@@ -752,7 +765,7 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('click', closeMenu, true)
   window.removeEventListener('keydown', disableSelectAll)
-
+  useMitt.off(MittEnum.GLOBAL_FILES_DROP, handleGlobalFilesDrop)
   if (isMobile()) {
     removeMobileClosePanel()
   }
