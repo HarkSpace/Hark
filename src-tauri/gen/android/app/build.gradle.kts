@@ -23,10 +23,10 @@ val keystoreProperties = Properties().apply {
 
 android {
     compileSdk = 36
-    namespace = "com.hula.app"
+    namespace = "com.hark.app"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = "com.hula.app"
+        applicationId = "com.hark.app"
         minSdk = 26
         targetSdk = 36
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()

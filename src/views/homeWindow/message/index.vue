@@ -303,7 +303,7 @@ const sessionList = computed(() => {
           ...item,
           avatar: latestAvatar,
           name: displayName,
-          lastMsg: displayMsg || '欢迎使用HuLa',
+          lastMsg: displayMsg || '欢迎使用Hark',
           lastMsgTime: formatTimestamp(item?.activeTime),
           isAtMe
         }

@@ -28,11 +28,11 @@ fn enforce_debugger_policy() {
     #[cfg(not(debug_assertions))]
     {
         if set_dumpable(false).is_err() {
-            eprintln!("[HuLa] 无法设置 Linux dumpable 保护。");
+            eprintln!("[Hark] 无法设置 Linux dumpable 保护。");
         }
 
         if debugger_attached() {
-            eprintln!("[HuLa] 检测到调试器 (Linux)，已终止启动。");
+            eprintln!("[Hark] 检测到调试器 (Linux)，已终止启动。");
             std::process::exit(0);
         }
     }
@@ -40,7 +40,7 @@ fn enforce_debugger_policy() {
     #[cfg(debug_assertions)]
     {
         if debugger_attached() {
-            eprintln!("[HuLa] 调试模式：检测到调试器附加 (Linux)。");
+            eprintln!("[Hark] 调试模式：检测到调试器附加 (Linux)。");
         }
     }
 }

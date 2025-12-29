@@ -23,13 +23,13 @@ fn enforce_debugger_policy() {
     #[cfg(not(debug_assertions))]
     {
         if prevent_debugger_attach().is_err() {
-            eprintln!("[HuLa] 无法设置调试防护 (macOS) 。");
+            eprintln!("[Hark] 无法设置调试防护 (macOS) 。");
         }
     }
 
     #[cfg(debug_assertions)]
     {
-        eprintln!("[HuLa] 调试构建：macOS 运行时防护仅记录提示，不阻断调试。");
+        eprintln!("[Hark] 调试构建：macOS 运行时防护仅记录提示，不阻断调试。");
     }
 }
 

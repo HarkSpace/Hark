@@ -21,13 +21,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAccessibilityUsageDescription</key>
-	<string>HuLa needs accessibility permission to capture screen content</string>
+	<string>Hark needs accessibility permission to capture screen content</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Request camera access for WebRTC</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Request microphone access for WebRTC</string>
 	<key>NSScreenCaptureUsageDescription</key>
-	<string>HuLa needs screen recording permission to enable screenshot functionality</string>
+	<string>Hark needs screen recording permission to enable screenshot functionality</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -47,9 +47,9 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>HuLa needs local network access to reach your development server</string>
+	<string>Hark needs local network access to reach your development server</string>
 	<key>NSUserNotificationUsageDescription</key>
-	<string>HuLa 需要允许通知与角标以显示未读消息</string>
+	<string>Hark 需要允许通知与角标以显示未读消息</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

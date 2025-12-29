@@ -110,7 +110,7 @@
 
 ## 📝 项目介绍
 
-HuLa 是一款基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯系统。它利用了 Tauri 的跨平台能力和 Vue 3 的响应式设计，结合了 TypeScript 的类型安全特性和 Vite 7 的快速构建，为用户提供了一个高效、安全和易用的通讯解决方案。
+Hark 是一款基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯系统。它利用了 Tauri 的跨平台能力和 Vue 3 的响应式设计，结合了 TypeScript 的类型安全特性和 Vite 7 的快速构建，为用户提供了一个高效、安全和易用的通讯解决方案。
 
 ## 🛠️ 技术栈
 
@@ -354,7 +354,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 ## 🎁 支持项目
 
 <h3>💝 赞助支持</h3>
-<p><em>如果您觉得 HuLa 对您有帮助，欢迎赞助支持，您的支持是我们不断前进的动力！</em></p>
+<p><em>如果您觉得 Hark 对您有帮助，欢迎赞助支持，您的支持是我们不断前进的动力！</em></p>
 
 <div>
  <img src="https://raw.gitcode.com/HuLaSpark/HuLa/files/master/preview/zs.jpg" height="240" alt="WeChat Code">
@@ -469,7 +469,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 <div align="center">
   <h3>🌟 感谢您的关注</h3>
   <p>
-    <em>如果您觉得 HuLa 有价值，请给我们一个 ⭐ Star，这是对我们最大的鼓励！</em>
+    <em>如果您觉得 Hark 有价值，请给我们一个 ⭐ Star，这是对我们最大的鼓励！</em>
   </p>
   <p>
     <strong>让我们一起构建更好的即时通讯体验 🚀</strong>

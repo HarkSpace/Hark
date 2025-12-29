@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-full flex-1">
-    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="hula" />
+    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed top-0" alt="hark" />
 
     <!-- 页面蒙板 -->
     <div

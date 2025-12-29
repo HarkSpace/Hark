@@ -7,7 +7,7 @@
       :class="
         groupStore.getUserInfo(uid)?.wearingItemId === '6' ? 'object-contain bg-#e9e9e980 dark:bg-#111' : 'object-cover'
       "
-      :src="groupStore.getUserInfo(uid)?.wearingItemId === '6' ? '/hula.png' : '/img/dispersion-bg.png'"
+      :src="groupStore.getUserInfo(uid)?.wearingItemId === '6' ? '/hark.png' : '/img/dispersion-bg.png'"
       alt="" />
     <div class="h-20px"></div>
     <n-flex vertical :size="20" class="size-full p-10px box-border z-10 relative">

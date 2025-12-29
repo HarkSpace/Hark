@@ -9,10 +9,10 @@
   },
   "input": {
     "account": {
-      "placeholder": "邮箱/HuLa账号"
+      "placeholder": "邮箱/Hark账号"
     },
     "pass": {
-      "placeholder": "输入 HuLa 密码"
+      "placeholder": "输入 Hark 密码"
     }
   },
   "option": {
@@ -27,7 +27,7 @@
       "text1": "已阅读并同意",
       "text2": "服务协议",
       "text3": "和",
-      "text4": "HuLa隐私保护指引"
+      "text4": "Hark隐私保护指引"
     }
   },
   "auth_way": {
@@ -36,7 +36,7 @@
   "register": "注册账号",
   "qr_code_expired": "二维码已过期",
   "qr_code_expired_hint": "请稍后再试",
-  "qr_code_scan_hint": "请使用 HuLa App 扫码登录",
+  "qr_code_scan_hint": "请使用 Hark App 扫码登录",
   "qr_code_gen_fail_hint": "生成二维码失败",
   "qr_code_scan_success_hint": "扫码成功，等待授权",
   "wait_auth_hint": "等待授权...",
@@ -64,7 +64,7 @@
     "load_text": {
       "loading": "加载中...",
       "refreshing": "刷新中...",
-      "scan_hint": "请使用 HuLa App 扫码登录",
+      "scan_hint": "请使用 Hark App 扫码登录",
       "login": "登录中...",
       "retry": "请稍后再试",
       "auth_pending": "等待授权..."
@@ -77,19 +77,19 @@
   },
   "guide": {
     "welcome": {
-      "title": "🎉 欢迎使用 HuLa",
-      "desc": "HuLa 基于 Tauri 构建，支持 Windows、macOS、Linux、iOS、Android"
+      "title": "🎉 欢迎使用 Hark",
+      "desc": "Hark 基于 Tauri 构建，支持 Windows、macOS、Linux、iOS、Android"
     },
     "privacy": {
       "title": "🤔 隐私条款与服务协议",
-      "desc": "请先阅读 HuLa 的隐私条款与服务协议"
+      "desc": "请先阅读 Hark 的隐私条款与服务协议"
     },
     "network": {
       "title": "⚙️ 网络设置",
-      "desc": "HuLa 支持自定义服务地址，可替换官方入口"
+      "desc": "Hark 支持自定义服务地址，可替换官方入口"
     },
     "register": {
-      "title": "🤓 如何登录 HuLa",
+      "title": "🤓 如何登录 Hark",
       "desc": "使用前请先注册并完善账号信息"
     },
     "actions": {
@@ -112,7 +112,7 @@
       "suffix": "后缀"
     },
     "placeholder": {
-      "host": "127.0.0.1或hulaspark.com",
+      "host": "127.0.0.1",
       "port": "443",
       "api_suffix": "api",
       "ws_suffix": "websocket"

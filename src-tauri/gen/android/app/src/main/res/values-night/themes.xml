@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.hula" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.hark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.hula.Launcher" parent="Theme.hula">
+    <style name="Theme.hark.Launcher" parent="Theme.hark">
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 </resources>

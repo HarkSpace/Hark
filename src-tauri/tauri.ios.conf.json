@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "HuLa",
+  "productName": "Hark",
   "version": "3.0.7",
-  "identifier": "com.hula.ios",
+  "identifier": "com.hark.ios",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",

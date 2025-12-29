@@ -1,6 +1,6 @@
 # 七牛云上传功能使用指南
 
-HuLa 现已支持使用七牛云存储服务来上传和存储文件，这为用户提供了更灵活的文件存储选择。本文档将介绍如何在 HuLa 中使用七牛云上传功能。
+Hark 现已支持使用七牛云存储服务来上传和存储文件，这为用户提供了更灵活的文件存储选择。本文档将介绍如何在 Hark 中使用七牛云上传功能。
 
 ## 功能特点
 
@@ -16,7 +16,7 @@ HuLa 现已支持使用七牛云存储服务来上传和存储文件，这为用
 
 ### 七牛云区域设置
 
-七牛云提供了多个存储区域，HuLa 支持根据配置自动选择合适的上传域名：
+七牛云提供了多个存储区域，Hark 支持根据配置自动选择合适的上传域名：
 
 | 区域代码 | 区域名称 | 上传域名 |
 |---------|---------|---------|
@@ -95,7 +95,7 @@ async function uploadWithDefault(filePath: string) {
 
 ### 使用分片上传
 
-对于大文件上传，HuLa 现在支持使用七牛云的分片上传功能，可以提高上传成功率和性能：
+对于大文件上传，Hark 现在支持使用七牛云的分片上传功能，可以提高上传成功率和性能：
 
 ```typescript
 import { useUpload, UploadProviderEnum } from '@/hooks/useUpload'
@@ -140,7 +140,7 @@ async function uploadLargeFileToQiniu(filePath: string) {
 
 ### 在消息策略中使用
 
-HuLa 的消息策略已集成七牛云上传功能，可以通过传递 `provider` 选项来指定使用哪种上传方式：
+Hark 的消息策略已集成七牛云上传功能，可以通过传递 `provider` 选项来指定使用哪种上传方式：
 
 ```typescript
 import { messageStrategyMap } from '@/strategy/MessageStrategy'
@@ -229,7 +229,7 @@ GET /api/qiniu/token
 1. 在七牛云控制台创建存储空间（Bucket）
 2. 获取 AccessKey 和 SecretKey
 3. 配置后端服务，实现获取上传 Token 的接口
-4. 使用 HuLa 提供的上传接口进行测试
+4. 使用 Hark 提供的上传接口进行测试
 
 ## 注意事项
 

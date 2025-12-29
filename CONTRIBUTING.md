@@ -1,8 +1,8 @@
-# HuLa - Contributing Guide 🌟
+# Hark - Contributing Guide 🌟
 
-We're thrilled that you want to contribute to HuLa! 😄
+We're thrilled that you want to contribute to Hark! 😄
 
-HuLa is an open-source project, and we welcome your collaboration. Before you jump in, let's make sure you're all set to contribute effectively and have loads of fun along the way!
+Hark is an open-source project, and we welcome your collaboration. Before you jump in, let's make sure you're all set to contribute effectively and have loads of fun along the way!
 
 ## Fork the Repository
 

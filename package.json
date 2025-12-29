@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/jsconfig",
-  "name": "hula",
+  "name": "hark",
   "type": "module",
   "version": "3.0.7",
   "license": "Apache-2.0",
@@ -9,21 +9,21 @@
     "pnpm": ">=10"
   },
   "repository": {
-    "url": "https://github.com/HuLaSpark/HuLa.git"
+    "url": "https://github.com/HarkSpace/Hark.git"
   },
   "author": {
-    "name": "HuLaSpark团队",
-    "email": "2439646234@qq.com",
-    "url": "https://github.com/HuLaSpark"
+    "name": "HarkSpace团队",
+    "email": "1906216170@qq.com",
+    "url": "https://github.com/HarkSpace"
   },
   "scripts": {
     "========= 启动vue(tauri项目会连带执行不需要单独执行) =========": "",
     "dev": "vite",
     "========= 打包vue(tauri项目会连带执行不需要单独执行) =========": "",
     "build": "vue-tsc --noEmit && vite build",
-    "========= 启动HuLa桌面应用程序 =========": "",
+    "========= 启动Hark桌面应用程序 =========": "",
     "tauri:dev": "tauri dev",
-    "========= 启动HuLa桌面应用程序(简化命令) =========": "",
+    "========= 启动Hark桌面应用程序(简化命令) =========": "",
     "td": "tauri dev",
     "========= windows中启动安卓纯前端(简化命令) =========": "",
     "adev:win": "set TAURI_ENV_PLATFORM=android&& vite",
@@ -37,9 +37,9 @@
     "tb": "node scripts/interactive-build-inquirer.js",
     "========= 打包桌面应用程序 =========": "",
     "tauri:build": "node scripts/interactive-build-inquirer.js",
-    "========= 启动HuLa ios 程序 =========": "",
+    "========= 启动Hark ios 程序 =========": "",
     "tauri:ios:dev": "tauri ios dev",
-    "========= 启动HuLa android 程序 =========": "",
+    "========= 启动Hark android 程序 =========": "",
     "tauri:android:dev": "tauri android dev",
     "========= 生成icon =========": "",
     "tauri:icon": "tauri icon public/light.png",

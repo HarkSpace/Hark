@@ -1,7 +1,7 @@
 <template>
   <n-flex data-tauri-drag-region vertical :size="10" align="center" justify="center" class="flex flex-1">
     <!-- logo -->
-    <img data-tauri-drag-region class="w-275px h-125px drop-shadow-2xl" src="/hula.png" alt="" />
+    <img data-tauri-drag-region class="w-275px h-125px drop-shadow-2xl" src="/hark.png" alt="" />
 
     <n-flex data-tauri-drag-region vertical justify="center" :size="16" class="p-[30px_20px]">
       <n-flex justify="space-between" align="center">

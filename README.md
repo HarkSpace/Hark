@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="350px" height="150px" src="public/hula.png"/>
+  <img width="350px" height="150px" src="public/hark.png"/>
 </p>
 
 <p align="center">一款基于Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯系统</p>
@@ -77,9 +77,9 @@
   <h3>🔗 快速链接</h3>
 
   <p>
-    💻 <strong>官网：</strong><a href="https://hulaspark.com">HuLaSpark</a> |
+    💻 <strong>官网：</strong><a href="https://hulaspark.com">HarkSpace</a> |
     📝 <strong>启动文档：</strong><a href="docs/project_guide.md">环境配置及其启动教程</a> |
-    ☕️ <strong>服务端：</strong><a href="https://github.com/HulaSpark/HuLa-Server">GitHub</a> / <a href="https://gitee.com/HulaSpark/HuLa-Server">Gitee</a> |
+    ☕️ <strong>服务端：</strong><a href="https://github.com/HarkSpace/HuLa-Server">GitHub</a> / <a href="https://gitee.com/HarkSpace/HuLa-Server">Gitee</a> |
     💬 <strong>微信：</strong><code>cy2439646234</code>
   </p>
 </div>
@@ -110,7 +110,7 @@
 
 ## 📝 项目介绍
 
-HuLa 是一款基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯系统。它利用了 Tauri 的跨平台能力和 Vue 3 的响应式设计，结合了 TypeScript 的类型安全特性和 Vite 7 的快速构建，为用户提供了一个高效、安全和易用的通讯解决方案。
+Hark 是一款基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯系统。它利用了 Tauri 的跨平台能力和 Vue 3 的响应式设计，结合了 TypeScript 的类型安全特性和 Vite 7 的快速构建，为用户提供了一个高效、安全和易用的通讯解决方案。
 
 ## 🛠️ 技术栈
 
@@ -355,7 +355,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 ## 🎁 支持项目
 
 <h3>💝 赞助支持</h3>
-<p><em>如果您觉得 HuLa 对您有帮助，欢迎赞助支持，您的支持是我们不断前进的动力！</em></p>
+<p><em>如果您觉得 Hark 对您有帮助，欢迎赞助支持，您的支持是我们不断前进的动力！</em></p>
 
 <div>
  <img src="preview/zs.jpg" height="240" alt="WeChat Code">
@@ -369,15 +369,15 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 ## 💬 加入社区
 
 <div align="center">
-  <h3>🤝 HuLa 社区讨论群</h3>
+  <h3>🤝 Hark 社区讨论群</h3>
   <p><em>与开发者和用户一起交流讨论，获取最新资讯和技术支持</em></p>
 
-  <p><em>使用 HuLa 移动端扫码加入下方 Issues 群，第一时间反馈问题与建议。</em></p>
+  <p><em>使用 Hark 移动端扫码加入下方 Issues 群，第一时间反馈问题与建议。</em></p>
 
   <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
     <img src="preview/wx.png" width="260" height="340" alt="微信群二维码">
     <img src="preview/qq.jpg" width="260" height="340" alt="QQ群二维码">
-    <img src="preview/HuLa-QR.png" width="315" height="315" alt="HuLa Issues 群二维码">
+    <img src="preview/HuLa-QR.png" width="315" height="315" alt="Hark Issues 群二维码">
   </div>
 </div>
 
@@ -385,7 +385,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 
 <div align="center">
   <h3>贡献者荣誉榜</h3>
-  <p><em>感谢以下朋友对 HuLa 项目的慷慨支持！</em></p>
+  <p><em>感谢以下朋友对 Hark 项目的慷慨支持！</em></p>
 </div>
 
 ### 💎 钻石赞助者 (￥1000+)
@@ -470,7 +470,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 <div align="center">
   <h3>🌟 感谢您的关注</h3>
   <p>
-    <em>如果您觉得 HuLa 有价值，请给我们一个 ⭐ Star，这是对我们最大的鼓励！</em>
+    <em>如果您觉得 Hark 有价值，请给我们一个 ⭐ Star，这是对我们最大的鼓励！</em>
   </p>
   <p>
     <strong>让我们一起构建更好的即时通讯体验 🚀</strong>

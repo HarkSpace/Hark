@@ -49,7 +49,7 @@
         <!-- 图片区 -->
         <div class="w-full h-30vh relative">
           <div class="flex h-95% w-full relative">
-            <img class="w-full h-full object-contain bg-#90909048 dark:bg-#111" src="/hula.png" alt="" />
+            <img class="w-full h-full object-contain bg-#90909048 dark:bg-#111" src="/hark.png" alt="" />
           </div>
           <!-- 左上角通知按钮 -->
           <Transition name="header-fade">

@@ -17,7 +17,7 @@ startWebVitalObserver()
 
 if (isIOS()) {
   invoke('request_ios_badge_authorization').catch((error) => {
-    console.warn('[HuLaBadge] 请求 iOS 角标权限失败', error)
+    console.warn('[HarkBadge] 请求 iOS 角标权限失败', error)
   })
 }
 

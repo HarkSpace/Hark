@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img width="350px" height="150px" src="public/hula.png"/>
+  <img width="350px" height="150px" src="public/hark.png"/>
 </p>
 
 <p align="center">An instant messaging system built with Tauri, Vite 7, Vue 3, and TypeScript</p>
@@ -111,7 +111,7 @@
 
 ## 📝 Project Introduction
 
-HuLa is an instant messaging system built with Tauri, Vite 7, Vue 3, and TypeScript. It leverages Tauri's cross-platform capabilities and Vue 3's reactive design, combined with TypeScript's type safety features and Vite 7's fast build process, providing users with an efficient, secure, and user-friendly communication solution.
+Hark is an instant messaging system built with Tauri, Vite 7, Vue 3, and TypeScript. It leverages Tauri's cross-platform capabilities and Vue 3's reactive design, combined with TypeScript's type safety features and Vite 7's fast build process, providing users with an efficient, secure, and user-friendly communication solution.
 
 ## 🛠️ Tech Stack
 
@@ -346,7 +346,7 @@ Execute **pnpm run commit** to invoke _git commit_ interaction, complete informa
 ## 🎁 Support the Project
 
 <h3>💝 Sponsor Support</h3>
-<p><em>If you find HuLa helpful, welcome to sponsor and support us. Your support is our motivation to keep moving forward!</em></p>
+<p><em>If you find Hark helpful, welcome to sponsor and support us. Your support is our motivation to keep moving forward!</em></p>
 
 <div>
  <img src="preview/zs.jpg" height="240" alt="WeChat Code">
@@ -360,15 +360,15 @@ Execute **pnpm run commit** to invoke _git commit_ interaction, complete informa
 ## 💬 Join Community
 
 <div align="center">
-  <h3>🤝 HuLa Community Discussion Group</h3>
+  <h3>🤝 Hark Community Discussion Group</h3>
   <p><em>Join developers and users for discussions, get the latest news and technical support</em></p>
 
-  <p><em>Use the HuLa mobile app to scan the Issues group QR code below and share feedback anytime.</em></p>
+  <p><em>Use the Hark mobile app to scan the Issues group QR code below and share feedback anytime.</em></p>
 
   <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
     <img src="preview/wx.png" width="260" height="340" alt="WeChat Group QR Code">
     <img src="preview/qq.jpg" width="260" height="340" alt="QQ Group QR Code">
-    <img src="preview/HuLa-QR.png" width="315" height="315" alt="HuLa Issues Group QR Code">
+    <img src="preview/HuLa-QR.png" width="315" height="315" alt="Hark Issues Group QR Code">
   </div>
 </div>
 
@@ -376,7 +376,7 @@ Execute **pnpm run commit** to invoke _git commit_ interaction, complete informa
 
 <div align="center">
   <h3>💎 Contributors Hall of Fame</h3>
-  <p><em>Thanks to the following friends for their generous support of the HuLa project!</em></p>
+  <p><em>Thanks to the following friends for their generous support of the Hark project!</em></p>
 </div>
 
 ### 💎 Diamond Sponsors (￥1000+)
@@ -457,7 +457,7 @@ Execute **pnpm run commit** to invoke _git commit_ interaction, complete informa
 <div align="center">
   <h3>🌟 Thank You for Your Attention</h3>
   <p>
-    <em>If you find HuLa valuable, please give us a ⭐ Star, which is the greatest encouragement for us!</em>
+    <em>If you find Hark valuable, please give us a ⭐ Star, which is the greatest encouragement for us!</em>
   </p>
   <p>
     <strong>Let's build a better instant messaging experience together 🚀</strong>

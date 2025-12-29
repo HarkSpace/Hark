@@ -51,11 +51,11 @@ export interface WSRtcCallMsg {
 const MAX_TIME_OUT_SECONDS = 30
 let configuration: RTCConfiguration = {
   iceServers: [
-    { urls: 'stun:117.72.67.248:3478' },
+    { urls: 'stun:101.201.46.30:3478' },
     {
-      urls: ['turn:117.72.67.248:3478?transport=udp', 'turn:117.72.67.248:3478?transport=tcp'],
+      urls: ['turn:101.201.46.30:3478?transport=udp', 'turn:101.201.46.30:3478?transport=tcp'],
       username: 'chr',
-      credential: '123456'
+      credential: '11111'
     }
   ],
   iceTransportPolicy: 'all'
@@ -84,7 +84,7 @@ const loadIceServers = async () => {
 // configuration.iceServers?.push(settings.ice_server)
 // const isSupportScreenSharing = !!navigator?.mediaDevices?.getDisplayMedia
 // TODO 改成动态配置
-const rtcCallBellUrl = '/sound/hula_bell.mp3'
+const rtcCallBellUrl = '/sound/hark_bell.mp3'
 
 /**
  * webrtc 相关

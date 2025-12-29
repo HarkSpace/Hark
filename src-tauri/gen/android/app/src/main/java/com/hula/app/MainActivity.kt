@@ -1,4 +1,4 @@
-﻿package com.hula.app
+﻿package com.hark.app
 
 import android.Manifest
 import android.os.Bundle

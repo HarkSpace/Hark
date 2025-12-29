@@ -1,4 +1,4 @@
-﻿package com.hula.app
+﻿package com.hark.app
 
 import android.app.Activity
 import android.view.View

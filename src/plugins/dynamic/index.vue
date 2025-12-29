@@ -47,7 +47,7 @@
         </ActionBar>
         <div data-tauri-drag-region class="size-full flex-center bg-#90909048 dark:bg-[#202020]">
           <!-- TODO: 默认的图片是这个格式，如果动态替换需要更改对应其他的格式 -->
-          <img data-tauri-drag-region class="size-76% object-contain" src="/hula.png" alt="" />
+          <img data-tauri-drag-region class="size-76% object-contain" src="/hark.png" alt="" />
         </div>
       </div>
       <div data-tauri-drag-region class="flex absolute right-20px bottom-0 gap-15px">

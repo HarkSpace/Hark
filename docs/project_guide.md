@@ -1,7 +1,7 @@
-# HuLa 项目入门手册 🚀
+# Hark 项目入门手册 🚀
 
 <p align="center">
-  <img width="350px" height="150px" src="../public/hula.png"/>
+  <img width="350px" height="150px" src="../public/hark.png"/>
 </p>
 
 <p align="center">基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的跨平台即时通讯系统完整开发指南</p>
@@ -381,7 +381,7 @@ HuLa/
    **环境信息**
    - 操作系统: [例如 Windows 11]
    - Node.js 版本: [例如 v22.12.0]
-   - HuLa 版本: [例如 v2.6.13]
+   - Hark 版本: [例如 v2.6.13]
 
    **截图或日志**
    如有可能，请提供相关截图或错误日志
@@ -467,7 +467,7 @@ HuLa/
 
 ### 简化配置说明
 
-HuLa 项目现在使用统一配置方案，您只需要修改一个文件即可完成服务地址配置：
+Hark 项目现在使用统一配置方案，您只需要修改一个文件即可完成服务地址配置：
 
 **配置文件：** `src-tauri/configuration/local.yaml`
 
@@ -578,9 +578,9 @@ pnpm run td
 
 ---
 
-## 🎉 开始您的 HuLa 开发之旅
+## 🎉 开始您的 Hark 开发之旅
 
-现在您已经掌握了 HuLa 项目的完整开发指南！快来加入我们，一起构建更好的即时通讯体验吧！
+现在您已经掌握了 Hark 项目的完整开发指南！快来加入我们，一起构建更好的即时通讯体验吧！
 
 如果在开发过程中遇到任何问题，请不要犹豫地：
 1. 📖 查阅此文档

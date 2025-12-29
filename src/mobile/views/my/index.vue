@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-full">
-    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed z-0 top-0" alt="hula" />
+    <img src="@/assets/mobile/chat-home/background.webp" class="w-100% fixed z-0 top-0" alt="hark" />
 
     <!-- 设置区 -->
     <Settings />

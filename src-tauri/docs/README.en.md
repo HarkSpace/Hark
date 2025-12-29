@@ -111,7 +111,7 @@
 
 ## 📝 Project Introduction
 
-HuLa is an instant messaging system built with Tauri, Vite 7, Vue 3, and TypeScript. It leverages Tauri's cross-platform capabilities and Vue 3's reactive design, combined with TypeScript's type safety features and Vite 7's fast build process, providing users with an efficient, secure, and user-friendly communication solution.
+Hark is an instant messaging system built with Tauri, Vite 7, Vue 3, and TypeScript. It leverages Tauri's cross-platform capabilities and Vue 3's reactive design, combined with TypeScript's type safety features and Vite 7's fast build process, providing users with an efficient, secure, and user-friendly communication solution.
 
 ## 🛠️ Tech Stack
 
@@ -345,7 +345,7 @@ Execute **pnpm run commit** to invoke _git commit_ interaction, complete informa
 ## 🎁 Support the Project
 
 <h3>💝 Sponsor Support</h3>
-<p><em>If you find HuLa helpful, welcome to sponsor and support us. Your support is our motivation to keep moving forward!</em></p>
+<p><em>If you find Hark helpful, welcome to sponsor and support us. Your support is our motivation to keep moving forward!</em></p>
 
 <div>
  <img src="https://raw.gitcode.com/HuLaSpark/HuLa/files/master/preview/zs.jpg" height="240" alt="WeChat Code">
@@ -456,7 +456,7 @@ Execute **pnpm run commit** to invoke _git commit_ interaction, complete informa
 <div align="center">
   <h3>🌟 Thank You for Your Attention</h3>
   <p>
-    <em>If you find HuLa valuable, please give us a ⭐ Star, which is the greatest encouragement for us!</em>
+    <em>If you find Hark valuable, please give us a ⭐ Star, which is the greatest encouragement for us!</em>
   </p>
   <p>
     <strong>Let's build a better instant messaging experience together 🚀</strong>

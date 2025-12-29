@@ -62,7 +62,7 @@ Installed packages:
 #### （3）安装安卓SDK包
 
 1. 用 `sdkmanager --list --channel=0`命令查看 `platforms;android`开头的安卓SDK，并选择所需版本，例如：需要安卓SDK API Level 35版本的就是 `platforms;android-35`
-2. Hula所使用安卓SDK版本为 `platforms;android-35`，输入指令 `sdkmanager "platforms;android-35"`，执行结果可能如下：
+2. Hark所使用安卓SDK版本为 `platforms;android-35`，输入指令 `sdkmanager "platforms;android-35"`，执行结果可能如下：
 
 ```powershell
 C:\Users\[用户]>sdkmanager "platforms;android-35"
@@ -74,7 +74,7 @@ C:\Users\[用户]>sdkmanager "platforms;android-35"
 #### （4）安装剩余工具
 
 - 安装剩下的工具 `build-tools、emulator、ndk、platform-tools`，安装方法同（3）一样，安装完成后使用 `sdkmanager --list_installed`命令检查
-- Hula平台所需工具集版本如下，可直接用 `sdkmanager xxx`安装：
+- Hark平台所需工具集版本如下，可直接用 `sdkmanager xxx`安装：
   `emulator`
   `platform-tools`
   `ndk;28.2.13676358`
@@ -182,7 +182,7 @@ INFO         | IPv4 server found: 192.168.1.1
 ......
 ```
 
-## 二、初始化Hula项目安卓版
+## 二、初始化Hark项目安卓版
 
 ### 1、初始化
 
@@ -211,9 +211,9 @@ INFO         | IPv4 server found: 192.168.1.1
 
 若想手动安装，可直接下载压缩包[第一部分](https://wwjk.lanzoue.com/iEgSp315i5xg)和[第二部分](https://wwjk.lanzoue.com/id3F5315i9he)，下载完成后在路径中创建 `org.jetbrains.kotlin`文件夹（已有不用创建）：`C:\Users\[用户]\.gradle\caches\modules-2\files-2.1\`，例如：`C:\Users\[用户]\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\`，然后把两部分的压缩包内容都放到文件夹中
 
-## 四、启动Hula移动端
+## 四、启动Hark移动端
 
-### 1、启动Hula移动端
+### 1、启动Hark移动端
 
 执行 `pnpm tauri android dev`，可选择模拟器和设备，效果如下：
 
@@ -255,7 +255,7 @@ C:\Users\[用户]>adb devices
 List of devices attached
 10AD2E0JMA001C3 device
 
-# 4. 启动Hula移动端，自动识别真机设备
+# 4. 启动Hark移动端，自动识别真机设备
 C:\project\rust\HuLa>pnpm tauri android dev
  (V2304A) with target "aarch64-linux-android"11S
         Info Using 192.168.1.33 to access the development server.
@@ -296,7 +296,7 @@ C:\project\rust\HuLa\src\mobile>adb devices
 List of devices attached
 192.168.1.43:9222       offline
 
-# 6. 启动Hula移动端，自动识别真机设备
+# 6. 启动Hark移动端，自动识别真机设备
 C:\project\rust\HuLa\src\mobile>pnpm tauri android dev
 
 > hula@2.6.13 adev C:\project\rust\HuLa

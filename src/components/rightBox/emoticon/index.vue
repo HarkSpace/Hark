@@ -184,7 +184,7 @@ import type { ComponentPublicInstance } from 'vue'
 import { convertFileSrc } from '@tauri-apps/api/core'
 import { appDataDir, join, resourceDir } from '@tauri-apps/api/path'
 import { BaseDirectory, exists, writeFile } from '@tauri-apps/plugin-fs'
-import HulaEmojis from 'hula-emojis'
+import HulaEmojis from 'hula-emojis' // 第三方包名保持不变
 import type { ScrollbarInst, VirtualListInst } from 'naive-ui'
 import pLimit from 'p-limit'
 import type { EmojiItem as EmojiListItem } from '@/services/types'

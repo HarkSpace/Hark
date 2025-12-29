@@ -12,7 +12,7 @@
       <n-flex class="ma text-center w-260px pointer-events-auto" vertical :size="16">
         <n-flex justify="center" align="center">
           <span class="text-(24px #70938c) textFont">{{ t('auth.register.title') }}</span>
-          <img class="w-100px h-40px" src="/hula.png" alt="" />
+          <img class="w-100px h-40px" src="/hark.png" alt="" />
         </n-flex>
         <n-form :model="info" :rules="rules" ref="registerForm">
           <!-- 注册信息 -->
@@ -165,7 +165,7 @@
       class="text-(12px #909090) w-full absolute bottom-20px left-1/2 transform -translate-x-1/2"
       :size="8"
       justify="center">
-      <span>Copyright {{ currentYear - 1 }}-{{ currentYear }} HuLaSpark All Rights Reserved.</span>
+      <span>Copyright {{ currentYear - 1 }}-{{ currentYear }} Hark All Rights Reserved.</span>
     </n-flex>
 
     <!-- 星标提示框 -->
