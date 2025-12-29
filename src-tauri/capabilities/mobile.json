@@ -135,7 +135,7 @@
       ]
     },
     {
-      "identifier": "hark:default",
+      "identifier": "hula:default",
       "scope": {
         "allow": ["*"]
       }

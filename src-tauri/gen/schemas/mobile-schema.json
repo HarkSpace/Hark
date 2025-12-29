@@ -6521,19 +6521,19 @@
         {
           "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-ping`",
           "type": "string",
-          "const": "hark:default",
+          "const": "hula:default",
           "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-ping`"
         },
         {
           "description": "Enables the ping command without any pre-configured scope.",
           "type": "string",
-          "const": "hark:allow-ping",
+          "const": "hula:allow-ping",
           "markdownDescription": "Enables the ping command without any pre-configured scope."
         },
         {
           "description": "Denies the ping command without any pre-configured scope.",
           "type": "string",
-          "const": "hark:deny-ping",
+          "const": "hula:deny-ping",
           "markdownDescription": "Denies the ping command without any pre-configured scope."
         },
         {
