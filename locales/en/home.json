@@ -336,7 +336,7 @@
   "about": {
     "version": "Version: {version} ({arch})",
     "device": "Device: {type}{version}",
-    "copyright": "Copyright © {start}-{end} Hark",
+    "copyright": "Copyright © {start}-{end} HarkSpace",
     "rights": "All Rights Reserved."
   },
   "apply_list": {

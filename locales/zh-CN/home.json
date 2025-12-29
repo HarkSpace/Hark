@@ -335,7 +335,7 @@
   "about": {
     "version": "版本：{version} ({arch})",
     "device": "当前设备：{type}{version}",
-    "copyright": "Copyright © {start}-{end} Hark",
+    "copyright": "Copyright © {start}-{end} HarkSpace",
     "rights": "All Rights Reserved."
   },
   "apply_list": {
