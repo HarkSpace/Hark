@@ -67,10 +67,10 @@
       "windows": {
         "installMode": "passive"
       },
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQxNjY2MTM0M0RDOEFGODMKUldTRHI4ZzlOR0ZtUVFldmdBaHFzdFExSnBWTWVqb1ZINEFQeFpLcFNXRFZ2QnJxdFpFdUhkeFQK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDEyNjRERDcwNTBGRDlGMEUKUldRT24vMVFjTjFrRXJ5b0ZiSWc3ZGRndm5pSUN3ZTR1Z3p5WmF1enM0ZlRrNFJnZ09JaUVwdUkK",
       "endpoints": [
         "https://api.upgrade.toolsetlink.com/v1/tauri/upgrade?tauriKey=geShj8UB7zd1DyrM_YFNdg&versionName={{current_version}}&appointVersionName=&devModelKey=&devKey=&target={{target}}&arch={{arch}}",
-        "https://gitee.com/catkin-T/THOIFR/releases/download/latest/latest.json"
+        "https://gitee.com/HarkSpace/Hark/releases/download/latest/latest.json"
       ]
     }
   }

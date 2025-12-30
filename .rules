@@ -1,7 +1,7 @@
-# HuLa Project Context
+# Hark Project Context
 
 ## Overview
-HuLa is a modern, cross-platform Instant Messaging (IM) system. It leverages **Tauri v2** for the application container, **Vite 7** for fast frontend tooling, **Vue 3** for the user interface, and **TypeScript** for type safety. The backend logic is implemented in **Rust**.
+Hark is a modern, cross-platform Instant Messaging (IM) system. It leverages **Tauri v2** for the application container, **Vite 7** for fast frontend tooling, **Vue 3** for the user interface, and **TypeScript** for type safety. The backend logic is implemented in **Rust**.
 
 The project supports:
 - **Desktop:** Windows, macOS, Linux

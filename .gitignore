@@ -37,3 +37,7 @@ db.sqlite
 
 src/typings/components.pc.d.ts
 src/typings/components.mobile.d.ts
+
+# Tauri signing keys (私钥文件，绝对不能提交到仓库)
+.tauri-key
+.tauri-key.pub
