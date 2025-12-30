@@ -2694,7 +2694,7 @@ dependencies = [
 
 [[package]]
 name = "hark"
-version = "3.0.7"
+version = "3.0.8"
 dependencies = [
  "anyhow",
  "async-walkdir",
