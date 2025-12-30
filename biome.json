@@ -11,7 +11,7 @@
       "!src/typings/*.d.ts",
       "!src-tauri/*",
       "!node_modules/*",
-      "!tauri-plugin-hula/*",
+      "!tauri-plugin-hark/*",
       "!dist/*",
       "!src-tauri/gen/schemas",
       "!.release-it.json"

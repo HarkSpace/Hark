@@ -5,12 +5,12 @@ function createCommand(prefix, join) {
 }
 
 export default {
-  // JavaScript/TypeScript 文件使用 Biome (排除 .d.ts 文件和tauri-plugin-hula目录)
+  // JavaScript/TypeScript 文件使用 Biome (排除 .d.ts 文件和tauri-plugin-hark目录)
   '*.{js,jsx,ts,tsx,json}': [
     (filenames) => {
       const filteredFiles = filenames.filter((f) =>
         !f.includes('src-tauri/') &&
-        !f.includes('tauri-plugin-hula/') &&
+        !f.includes('tauri-plugin-hark/') &&
         !f.includes('public/') &&
         !f.endsWith('.d.ts')
       )

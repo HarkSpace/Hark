@@ -3,8 +3,4 @@
     <style name="Theme.hark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
-
-    <style name="Theme.hark.Launcher" parent="Theme.hark">
-        <item name="android:windowBackground">@drawable/launch_screen</item>
-    </style>
 </resources>

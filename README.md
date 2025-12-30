@@ -46,7 +46,7 @@
       <img src="https://bestpractices.coreinfrastructure.org/projects/9692/badge" alt="CII Best Practices">
     </a>
     <a href="https://hulaspark.com">
-      <img src="public/hulaspark-badge.svg" alt="HuLaSpark">
+      <img src="public/harkspace-badge.svg" alt="HuLaSpark">
     </a>
     <a href="https://discord.gg/WhSkvhNEeE">
       <img src="https://img.shields.io/badge/-Discord-5865F2?logo=discord&logoColor=white&labelColor=555555" alt="Discord">
