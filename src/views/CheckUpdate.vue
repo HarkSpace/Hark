@@ -222,7 +222,7 @@ const checkUpdate = async () => {
       }
       newVersion.value = e.version
       // 检查版本之间不同的提交信息和提交日期
-      const url = `https://gitee.com/api/v5/repos/HuLaSpark/HuLa/releases/tags/v${newVersion.value}?access_token=${import.meta.env.VITE_GITEE_TOKEN}`
+      const url = `https://gitee.com/api/v5/repos/HarkSpace/Hark/releases/tags/v${newVersion.value}?access_token=${import.meta.env.VITE_GITEE_TOKEN}`
       await getCommitLog(url, true)
       text.value = t('message.check_update.update_now')
     })
@@ -308,7 +308,7 @@ onMounted(async () => {
     loading.value = false
     return
   }
-  const url = `https://gitee.com/api/v5/repos/HuLaSpark/HuLa/releases/tags/v${currentVersion.value}?access_token=${import.meta.env.VITE_GITEE_TOKEN}`
+  const url = `https://gitee.com/api/v5/repos/HarkSpace/Hark/releases/tags/v${currentVersion.value}?access_token=${import.meta.env.VITE_GITEE_TOKEN}`
   await getCommitLog(url)
   await checkUpdate()
 })

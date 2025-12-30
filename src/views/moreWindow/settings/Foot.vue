@@ -23,7 +23,7 @@
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://github.com/HuLaSpark/HuLa"
+                href="https://github.com/HarkSpace/Hark"
                 class="bg-#363636 cursor-pointer w-fit px-10px h-30px rounded-8px flex-center text-(12px #f1f1f1) no-underline">
                 {{ t('setting.footer.star_button') }}
               </a>
@@ -56,7 +56,7 @@
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://github.com/HuLaSpark/HuLa/issues"
+                href="https://github.com/HarkSpace/Hark/issues"
                 class="bg-#363636 cursor-pointer w-fit px-10px h-30px rounded-8px flex-center text-(12px #f1f1f1) no-underline">
                 {{ t('setting.footer.issue_button') }}
               </a>
