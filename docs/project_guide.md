@@ -192,13 +192,13 @@ pnpm run tauri:ios:init
 
 ```bash
 # 从 GitHub 克隆
-git clone https://github.com/HuLaSpark/HuLa.git
+git clone https://github.com/HarkSpace/Hark.git
 
 # 或从 Gitee 克隆（国内推荐）
-git clone https://gitee.com/HuLaSpark/HuLa.git
+git clone https://gitee.com/HarkSpace/Hark.git
 
 # 进入项目目录
-cd HuLa
+cd Hark
 ```
 
 ### 2. 安装依赖
@@ -273,7 +273,7 @@ pnpm run coverage
 ## 📁 项目目录结构
 
 ```
-HuLa/
+Hark/
 ├── 📁 src/                      # Vue 3 前端源码
 │   ├── 📁 agreement/            # 用户协议相关组件
 │   ├── 📁 assets/               # 静态资源
@@ -363,7 +363,7 @@ HuLa/
 
 1. **🔍 搜索现有 Issues**
    - 在提交新 Issue 前，请先搜索是否已有类似问题
-   - 访问 [GitHub Issues](https://github.com/HuLaSpark/HuLa/issues)
+   - 访问 [GitHub Issues](https://github.com/HarkSpace/Hark/issues)
 
 2. **📝 创建新 Issue**
    ```markdown
@@ -393,7 +393,7 @@ HuLa/
    ```bash
    # 点击 GitHub 页面右上角的 "Fork" 按钮
    # 然后克隆您的 Fork
-   git clone https://github.com/你的用户名/HuLa.git
+   git clone https://github.com/你的用户名/Hark.git
    cd HuLa
    ```
 
@@ -571,8 +571,8 @@ pnpm run td
 ## 🤝 社区交流
 
 - 💬 **微信群**: 扫描 README 中的二维码加入讨论群
-- 🌟 **GitHub**: [https://github.com/HuLaSpark/HuLa](https://github.com/HuLaSpark/HuLa)
-- 🦄 **Gitee**: [https://gitee.com/HulaSpark/HuLa](https://gitee.com/HulaSpark/HuLa)
+- 🌟 **GitHub**: [https://github.com/HarkSpace/Hark](https://github.com/HarkSpace/Hark)
+- 🦄 **Gitee**: [https://gitee.com/HarkSpace/Hark](https://gitee.com/HarkSpace/Hark)
 - 📧 **邮箱**: 2439646234@qq.com
 - 🌐 **官网**: [https://hulaspark.com](https://hulaspark.com)
 

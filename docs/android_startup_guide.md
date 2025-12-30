@@ -218,7 +218,7 @@ INFO         | IPv4 server found: 192.168.1.1
 执行 `pnpm tauri android dev`，可选择模拟器和设备，效果如下：
 
 ```powershell
-C:\project\rust\HuLa\src-tauri>pnpm tauri android dev
+C:\project\rust\Hark\src-tauri>pnpm tauri android dev
 Detected Android emulators:
   [0] MyEmulator
   [1] Pixel_35
@@ -256,7 +256,7 @@ List of devices attached
 10AD2E0JMA001C3 device
 
 # 4. 启动Hark移动端，自动识别真机设备
-C:\project\rust\HuLa>pnpm tauri android dev
+C:\project\rust\Hark>pnpm tauri android dev
  (V2304A) with target "aarch64-linux-android"11S
         Info Using 192.168.1.33 to access the development server.
         Info Replacing devUrl host with 192.168.1.33. If your frontend is not listening on that address, try configuring your development server to use the `TAURI_DEV_HOST` environment variable or 0.0.0.0 as host.
@@ -268,38 +268,38 @@ C:\project\rust\HuLa>pnpm tauri android dev
 
 ```powershell
 # 1. 启动USB调试
-C:\project\rust\HuLa\src\mobile>adb devices
+C:\project\rust\Hark\src\mobile>adb devices
 List of devices attached
 10AD7E0JMA001C2 device
 
 # 2. 启动adb端口监听
-C:\project\rust\HuLa\src\mobile>adb tcpip 9222 # 这里自定义为9222端口
+C:\project\rust\Hark\src\mobile>adb tcpip 9222 # 这里自定义为9222端口
 restarting in TCP mode port: 9222 # 该结果可能会不一样
 
 # 3. 连接无线设备
-C:\project\rust\HuLa\src\mobile>adb connect 192.168.1.43:9222 # ip地址是手机的ip，在无线调试那里可以看到
+C:\project\rust\Hark\src\mobile>adb connect 192.168.1.43:9222 # ip地址是手机的ip，在无线调试那里可以看到
 failed to authenticate to 192.168.1.43:9222
 
 # 4. 现在能看到有两个连接，一个是有线一个是无线
-C:\project\rust\HuLa\src\mobile>adb devices
+C:\project\rust\Hark\src\mobile>adb devices
 List of devices attached
 10AD7E0JMA001C2 device
 192.168.1.43:9222       device
 
 # 5. 这时把数据线拔掉，但是usb调试千万不能关，然后再次查看
-C:\project\rust\HuLa\src\mobile>adb devices
+C:\project\rust\Hark\src\mobile>adb devices
 List of devices attached
 192.168.1.43:9222       device # 表示无线调试已经完成
 
 # <注意> 完成无线调试后，不能关闭usb调试和无线调试，否则会这样
-C:\project\rust\HuLa\src\mobile>adb devices
+C:\project\rust\Hark\src\mobile>adb devices
 List of devices attached
 192.168.1.43:9222       offline
 
 # 6. 启动Hark移动端，自动识别真机设备
-C:\project\rust\HuLa\src\mobile>pnpm tauri android dev
+C:\project\rust\Hark\src\mobile>pnpm tauri android dev
 
-> hula@2.6.13 adev C:\project\rust\HuLa
+> hark@2.6.13 adev C:\project\rust\Hark
 > tauri android dev
 
  (V2304A) with target "aarch64-linux-android"11S
@@ -308,9 +308,9 @@ C:\project\rust\HuLa\src\mobile>pnpm tauri android dev
      Running BeforeDevCommand (`pnpm tauri android dev`)
 
 # <注意> 通过命令启动真机程序，程序优先选择真机运行，如果存在两个调试，则需要选择具体是哪个
-C:\project\rust\HuLa\src\mobile>pnpm tauri android dev
+C:\project\rust\Hark\src\mobile>pnpm tauri android dev
 
-> hula@2.6.13 adev C:\project\rust\HuLa
+> hark@2.6.13 adev C:\project\rust\Hark
 > tauri android dev
 
 Detected Android devices:
@@ -330,7 +330,7 @@ Device: 1                            #（在这里需要手动选择，从0开�
 <h2>（重要！）结束调试后务必断开连接：</h2>
 
 ```powershell
-C:\project\rust\HuLa\src\mobile>adb disconnect 192.168.1.43:9222
+C:\project\rust\Hark\src\mobile>adb disconnect 192.168.1.43:9222
 disconnected 192.168.1.43:9222
 ```
 

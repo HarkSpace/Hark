@@ -6,7 +6,7 @@
 
 <div align="center">
   <a href="https://trendshift.io/repositories/15187" target="_blank">
-    <img src="https://trendshift.io/api/badge/repositories/15187" alt="HuLaSpark%2FHuLa | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/>
+    <img src="https://trendshift.io/api/badge/repositories/15187" alt="HarkSpace%2FHark | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/>
   </a>
   <a href="https://hellogithub.com/repository/743b101346c54f6cb5c20eed2edbaa40" target="_blank">
     <img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=743b101346c54f6cb5c20eed2edbaa40&claim_uid=WsQaY6SlnL7qxG3&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" />
@@ -17,17 +17,17 @@
 
 <div align="center">
   <p>
-    <a href="https://gitee.com/HulaSpark/HuLa/stargazers">
-      <img src="https://gitee.com/HulaSpark/HuLa/badge/star.svg?theme=gvp" alt="Gitee Stars">
+    <a href="https://gitee.com/HarkSpace/Hark/stargazers">
+      <img src="https://gitee.com/HarkSpace/Hark/badge/star.svg?theme=gvp" alt="Gitee Stars">
     </a>
-    <a href="https://github.com/HulaSpark/HuLa/stargazers">
-      <img src="https://img.shields.io/github/stars/HulaSpark/HuLa?style=social" alt="GitHub Stars">
+    <a href="https://github.com/HarkSpace/Hark/stargazers">
+      <img src="https://img.shields.io/github/stars/HarkSpace/Hark?style=social" alt="GitHub Stars">
     </a>
-    <a href="https://gitcode.com/HuLaSpark/HuLa">
-      <img src="https://gitcode.com/HuLaSpark/HuLa/star/badge.svg" alt="GitCode Stars">
+    <a href="https://gitcode.com/HarkSpace/Hark">
+      <img src="https://gitcode.com/HarkSpace/Hark/star/badge.svg" alt="GitCode Stars">
     </a>
-    <a href="https://gitcode.com/HuLaSpark/HuLa">
-      <img src="https://atomgit.com/HuLaSpark/HuLa/star/2025top.svg" alt="2025百大开源项目">
+    <a href="https://gitcode.com/HarkSpace/Hark">
+      <img src="https://atomgit.com/HarkSpace/Hark/star/2025top.svg" alt="2025百大开源项目">
     </a>
   </p>
 </div>
@@ -36,17 +36,17 @@
 
 <div align="center">
   <p>
-    <a href="https://deepwiki.com/HuLaSpark/HuLa">
+    <a href="https://deepwiki.com/HarkSpace/Hark">
       <img src="https://deepwiki.com/badge.svg" alt="DeepWiki">
     </a>
-    <a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHuLaSpark%2FHuLa?ref=badge_shield">
-      <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHuLaSpark%2FHuLa.svg?type=shield" alt="FOSSA Status">
+    <a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHarkSpace%2FHark?ref=badge_shield">
+      <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHarkSpace%2FHark.svg?type=shield" alt="FOSSA Status">
     </a>
     <a href="https://www.bestpractices.dev/zh-CN/projects/9692">
       <img src="https://bestpractices.coreinfrastructure.org/projects/9692/badge" alt="CII Best Practices">
     </a>
     <a href="https://hulaspark.com">
-      <img src="public/harkspace-badge.svg" alt="HuLaSpark">
+      <img src="public/harkspace-badge.svg" alt="HarkSpace">
     </a>
     <a href="https://discord.gg/WhSkvhNEeE">
       <img src="https://img.shields.io/badge/-Discord-5865F2?logo=discord&logoColor=white&labelColor=555555" alt="Discord">
@@ -79,7 +79,7 @@
   <p>
     💻 <strong>官网：</strong><a href="https://hulaspark.com">HarkSpace</a> |
     📝 <strong>启动文档：</strong><a href="docs/project_guide.md">环境配置及其启动教程</a> |
-    ☕️ <strong>服务端：</strong><a href="https://github.com/HarkSpace/HuLa-Server">GitHub</a> / <a href="https://gitee.com/HarkSpace/HuLa-Server">Gitee</a> |
+    ☕️ <strong>服务端：</strong><a href="https://github.com/HarkSpace/Hark-Server">GitHub</a> / <a href="https://gitee.com/HarkSpace/Hark-Server">Gitee</a> |
     💬 <strong>微信：</strong><code>cy2439646234</code>
   </p>
 </div>
@@ -88,13 +88,13 @@
   中文 |
   <a href="README.en.md">English</a> |
   <!-- Keep these links. Translations will automatically update with the README. -->
-  <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=de">Deutsch</a> |
-  <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=es">Español</a> |
-  <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=fr">français</a> |
-  <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=ja">日本語</a> |
-  <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=ko">한국어</a> |
-  <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=pt">Português</a> |
-  <a href="https://www.readme-i18n.com/HuLaSpark/HuLa?lang=ru">Русский</a>
+  <a href="https://www.readme-i18n.com/HarkSpace/Hark?lang=de">Deutsch</a> |
+  <a href="https://www.readme-i18n.com/HarkSpace/Hark?lang=es">Español</a> |
+  <a href="https://www.readme-i18n.com/HarkSpace/Hark?lang=fr">français</a> |
+  <a href="https://www.readme-i18n.com/HarkSpace/Hark?lang=ja">日本語</a> |
+  <a href="https://www.readme-i18n.com/HarkSpace/Hark?lang=ko">한국어</a> |
+  <a href="https://www.readme-i18n.com/HarkSpace/Hark?lang=pt">Português</a> |
+  <a href="https://www.readme-i18n.com/HarkSpace/Hark?lang=ru">Русский</a>
 </p>
 
 ## 🌐 支持平台
@@ -270,24 +270,24 @@ Hark 是一款基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯
 
 ## 👏 感谢以下贡献者们！
 
-<a href="https://openomy.com/HuLaSpark/HuLa" target="_blank" style="display: block; width: 100%;" align="center">
-  <img src="https://openomy.com/svg?repo=HuLaSpark/HuLa&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
+<a href="https://openomy.com/HarkSpace/Hark" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=HarkSpace/Hark&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
 </a>
 
 <br/>
 
-<a href="https://openomy.com/HuLaSpark/HuLa" target="_blank" style="display: block; width: 100%;" align="center">
-  <img src="https://openomy.com/svg?repo=HuLaSpark/HuLa&chart=list&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
+<a href="https://openomy.com/HarkSpace/Hark" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=HarkSpace/Hark&chart=list&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
 </a>
 
 <br/>
 
-<a href="https://openomy.com/HuLaSpark/HuLa" target="_blank" style="display: block; width: 100%;" align="center">
-  <img src="https://openomy.com/svg?repo=HuLaSpark/HuLa&chart=podium&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
+<a href="https://openomy.com/HarkSpace/Hark" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.com/svg?repo=HarkSpace/Hark&chart=podium&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
 </a>
 
-<!-- <a href="https://github.com/HuLaSpark/HuLa/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HuLaSpark/HuLa" />
+<!-- <a href="https://github.com/HarkSpace/Hark/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=HarkSpace/Hark" />
 </a> -->
 
 <br/>
@@ -299,12 +299,12 @@ Hark 是一款基于 Tauri、Vite 7、Vue 3 和 TypeScript 构建的即时通讯
 
 ```bash
 # 克隆项目
-git clone https://gitee.com/HuLaSpark/HuLa.git
+git clone https://gitee.com/HarkSpace/Hark.git
 或者
-git clone https://github.com/HuLaSpark/HuLa.git
+git clone https://github.com/HarkSpace/Hark.git
 
 # 进入项目目录
-cd HuLa
+cd Hark
 
 # 安装依赖
 pnpm install
@@ -377,7 +377,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
   <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
     <img src="preview/wx.png" width="260" height="340" alt="微信群二维码">
     <img src="preview/qq.jpg" width="260" height="340" alt="QQ群二维码">
-    <img src="preview/HuLa-QR.png" width="315" height="315" alt="Hark Issues 群二维码">
+    <img src="preview/Hark-QR.png" width="315" height="315" alt="Hark Issues 群二维码">
   </div>
 </div>
 
@@ -444,7 +444,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
 
 > 📝 **温馨提示**
 > 该名单为手动更新，如果您已赞助但未在列表中，请联系我们：
-> 🐛 [GitHub Issue](https://github.com/HuLaSpark/HuLa/issues) | 📧 邮箱: `2439646234@qq.com` | 💬 微信: `cy2439646234`
+> 🐛 [GitHub Issue](https://github.com/HarkSpace/Hark/issues) | 📧 邮箱: `1906216170@qq.com` | 💬 微信: `Luk_Nov16`
 
   <br>
 </div>
@@ -457,8 +457,8 @@ sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
   <h3>⚖️ 许可证信息</h3>
 
   <p>
-    <a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHuLaSpark%2FHuLa?ref=badge_large">
-      <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHuLaSpark%2FHuLa.svg?type=large" alt="FOSSA Status" style="max-width: 100%; border-radius: 8px;">
+    <a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHarkSpace%2FHark?ref=badge_large">
+      <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHarkSpace%2FHark.svg?type=large" alt="FOSSA Status" style="max-width: 100%; border-radius: 8px;">
     </a>
   </p>
 
