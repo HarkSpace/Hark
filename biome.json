@@ -6,6 +6,7 @@
     "includes": [
       "**/*.{js,jsx,ts,tsx,vue,json}",
       "!.*",
+      ".vscode/**/*.json",
       "!public/*",
       "!coverage",
       "!src/typings/*.d.ts",
