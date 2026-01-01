@@ -3,7 +3,7 @@
     <div class="h-full flex-col-center gap-40px">
       <div class="flex-center absolute top-13vh left-36px">
         <p class="text-(20px #333)">{{ t('login.mobile.welcome_title') }}</p>
-        <img src="@/assets/mobile/2.svg" alt="" class="w-80px h-20px" />
+        <img src="@/assets/mobile/2.png" alt="" class="w-80px h-20px" />
       </div>
 
       <!-- 选项卡导航 -->

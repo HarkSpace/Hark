@@ -27,10 +27,7 @@ export const useCheckUpdate = () => {
     }
 
     await check({
-      timeout: 5000 /* 接口请求时长 5秒 */,
-      headers: {
-        'X-AccessKey': 'geShj8UB7zd1DyrM_YFNdg' // UpgradeLink的AccessKey
-      }
+      timeout: 5000 /* 接口请求时长 5秒 */
     })
       .then(async (e) => {
         if (!e?.available) {
