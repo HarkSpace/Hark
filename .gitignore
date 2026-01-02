@@ -41,3 +41,7 @@ src/typings/components.mobile.d.ts
 # Tauri signing keys (私钥文件，绝对不能提交到仓库)
 .tauri-key
 .tauri-key.pub
+
+# Android keystore files (签名文件，绝对不能提交到仓库)
+*.jks
+*.jks.backup
