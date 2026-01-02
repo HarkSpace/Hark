@@ -283,17 +283,3 @@ jobs:
           else
             echo "No draft release found for tag ${{ github.ref_name }}, it may already be published"
           fi
-
-  upgradeLink-upload:
-    needs: publish-release  # 依赖于 publish-release 作业完成（确保 release 已正式发布）
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send a request to UpgradeLink
-        uses: toolsetlink/upgradelink-action@v5
-        with:
-          source-url: 'https://github.com/HarkSpace/Hark/releases/download/${{ github.ref_name }}/latest.json'
-          access-key: ${{ secrets.UPGRADE_LINK_ACCESS_KEY }}  # ACCESS_KEY  密钥key
-          tauri-key: ${{ secrets.UPGRADE_LINK_TAURI_KEY }}    # TAURI_KEY tauri 应用唯一标识
-          github-token: ${{ secrets.GITHUB_TOKEN }}
