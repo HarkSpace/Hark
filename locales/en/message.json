@@ -173,7 +173,8 @@
     "update_error": "Update check failed, please try again later",
     "fetch_log_failed": "Failed to load release notes, please set token and retry",
     "download_success_toast": "Installer downloaded. It will install and restart soon",
-    "restart_failed": "Restart failed, please restart manually"
+    "restart_failed": "Restart failed, please restart manually",
+    "no_update_available": "You are using the latest version"
   },
   "notify": {
     "new_messages": "New messages",

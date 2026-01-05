@@ -173,7 +173,8 @@
     "update_error": "检查更新错误，请稍后再试",
     "fetch_log_failed": "获取更新日志失败，请配置token后再试",
     "download_success_toast": "安装包下载成功，稍后将自动安装并重启",
-    "restart_failed": "重启失败，请手动重启"
+    "restart_failed": "重启失败，请手动重启",
+    "no_update_available": "当前已是最新版本"
   },
   "notify": {
     "new_messages": "新消息",
