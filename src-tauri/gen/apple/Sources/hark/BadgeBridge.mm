@@ -2,7 +2,7 @@
 #import <UserNotifications/UserNotifications.h>
 #import <dispatch/dispatch.h>
 
-static inline NSInteger HulaSanitizeBadge(NSInteger count) {
+static inline NSInteger HarkSanitizeBadge(NSInteger count) {
     if (count < 0) {
         return 0;
     }
@@ -12,13 +12,13 @@ static inline NSInteger HulaSanitizeBadge(NSInteger count) {
     return count;
 }
 
-static void HulaSetBadgeInternal(NSInteger count) {
+static void HarkSetBadgeInternal(NSInteger count) {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIApplication *app = UIApplication.sharedApplication;
         if (!app) {
             return;
         }
-        app.applicationIconBadgeNumber = HulaSanitizeBadge(count);
+        app.applicationIconBadgeNumber = HarkSanitizeBadge(count);
     });
 }
 
@@ -26,11 +26,11 @@ static void HulaSetBadgeInternal(NSInteger count) {
 extern "C" {
 #endif
 
-void hula_set_application_badge(int32_t count) {
-    HulaSetBadgeInternal(count);
+void hark_set_application_badge(int32_t count) {
+    HarkSetBadgeInternal(count);
 }
 
-void hula_request_badge_authorization(void) {
+void hark_request_badge_authorization(void) {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (@available(iOS 10.0, *)) {
             UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
@@ -38,10 +38,10 @@ void hula_request_badge_authorization(void) {
             [center requestAuthorizationWithOptions:options
                                   completionHandler:^(BOOL granted, NSError *_Nullable error) {
                                       if (error) {
-                                          NSLog(@"[HuLaBadge] badge authorization error: %@", error);
+                                          NSLog(@"[HarkBadge] badge authorization error: %@", error);
                                       }
                                       if (!granted) {
-                                          NSLog(@"[HuLaBadge] badge authorization denied by user");
+                                          NSLog(@"[HarkBadge] badge authorization denied by user");
                                       }
                                   }];
         } else {

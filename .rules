@@ -59,7 +59,7 @@ The project supports:
     - **`entity/`**: SeaORM entity definitions.
     - **`migration/`**: Database migrations.
     - **`tauri.conf.json`**: Tauri configuration.
-- **`tauri-plugin-hula/`**: Custom local Tauri plugin.
+- **`tauri-plugin-hark/`**: Custom local Tauri plugin.
 
 ## Coding Style & Naming Conventions
 

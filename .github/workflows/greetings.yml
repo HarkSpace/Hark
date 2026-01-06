@@ -21,4 +21,4 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         issue-message: "👋 Thank you for your first Issue! We will check and reply as soon as possible. Please ensure that sufficient information has been provided to describe the problem."
-        pr-message: "🎉 Thank you for your first PR! We are very happy to have you join the HuLa project. We will review your contribution as soon as possible."
+        pr-message: "🎉 Thank you for your first PR! We are very happy to have you join the Hark project. We will review your contribution as soon as possible."

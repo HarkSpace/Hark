@@ -45,7 +45,7 @@
     <a href="https://www.bestpractices.dev/zh-CN/projects/9692">
       <img src="https://bestpractices.coreinfrastructure.org/projects/9692/badge" alt="CII Best Practices">
     </a>
-    <a href="https://hulaspark.com">
+    <a href="https://harkspace.cn">
       <img src="public/harkspace-badge.svg" alt="HarkSpace">
     </a>
     <a href="https://discord.gg/WhSkvhNEeE">
@@ -77,7 +77,7 @@
   <h3>🔗 快速链接</h3>
 
   <p>
-    💻 <strong>官网：</strong><a href="https://hulaspark.com">HarkSpace</a> |
+    💻 <strong>官网：</strong><a href="https://harkspace.cn">HarkSpace</a> |
     📝 <strong>启动文档：</strong><a href="docs/project_guide.md">环境配置及其启动教程</a> |
     ☕️ <strong>服务端：</strong><a href="https://github.com/HarkSpace/Hark-Server">GitHub</a> / <a href="https://gitee.com/HarkSpace/Hark-Server">Gitee</a> |
     💬 <strong>微信：</strong><code>cy2439646234</code>

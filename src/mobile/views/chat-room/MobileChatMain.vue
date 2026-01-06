@@ -26,7 +26,7 @@
             导入模型
           </n-button>
         </div>
-        <HuLaAssistant :active="true" :custom-model="customModelPath" class="mobile-assistant-view" />
+        <HarkAssistant :active="true" :custom-model="customModelPath" class="mobile-assistant-view" />
       </div>
       <div v-else @click="handleChatMainClick" class="h-full overflow-y-auto">
         <ChatMain @scroll="handleScroll" />
@@ -44,7 +44,7 @@ import { useGlobalStore } from '@/stores/global'
 import { storeToRefs } from 'pinia'
 import { UserType } from '@/enums'
 import { open } from '@tauri-apps/plugin-dialog'
-import HuLaAssistant from '@/components/rightBox/chatBox/HuLaAssistant.vue'
+import HarkAssistant from '@/components/rightBox/chatBox/HarkAssistant.vue'
 import { useAssistantModelPresets, type AssistantModelPreset } from '@/hooks/useAssistantModelPresets'
 
 defineOptions({

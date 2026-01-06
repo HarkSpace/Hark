@@ -1,16 +1,16 @@
 #[cfg(target_os = "ios")]
 mod platform {
     unsafe extern "C" {
-        fn hula_show_splashscreen();
-        fn hula_hide_splashscreen();
+        fn hark_show_splashscreen();
+        fn hark_hide_splashscreen();
     }
 
     pub fn show() {
-        unsafe { hula_show_splashscreen() };
+        unsafe { hark_show_splashscreen() };
     }
 
     pub fn hide() {
-        unsafe { hula_hide_splashscreen() };
+        unsafe { hark_hide_splashscreen() };
     }
 }
 

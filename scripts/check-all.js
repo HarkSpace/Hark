@@ -13,7 +13,7 @@ const __dirname = dirname(__filename)
  */
 async function runScript(scriptPath, description) {
   const startTime = performance.now()
-  console.log(chalk.blue(`\n[HuLa ${new Date().toLocaleTimeString()}] 开始${description}...\n`))
+  console.log(chalk.blue(`\n[Hark ${new Date().toLocaleTimeString()}] 开始${description}...\n`))
 
   try {
     execFileSync('node', [scriptPath], { stdio: 'inherit' })
@@ -27,7 +27,7 @@ async function runScript(scriptPath, description) {
 }
 
 async function main() {
-  console.log(chalk.cyan('正在检查HuLa需要的环境配置...\n'))
+  console.log(chalk.cyan('正在检查Hark需要的环境配置...\n'))
 
   /** @type {CheckItem[]} */
   const checks = [

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D1C276871C7C4757B5DF8C93"
-               BuildableName = "HuLa.app"
-               BlueprintName = "hula_iOS"
-               ReferencedContainer = "container:hula.xcodeproj">
+               BuildableName = "Hark.app"
+               BlueprintName = "hark_iOS"
+               ReferencedContainer = "container:hark.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -31,9 +31,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D1C276871C7C4757B5DF8C93"
-            BuildableName = "HuLa.app"
-            BlueprintName = "hula_iOS"
-            ReferencedContainer = "container:hula.xcodeproj">
+            BuildableName = "Hark.app"
+            BlueprintName = "hark_iOS"
+            ReferencedContainer = "container:hark.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <EnvironmentVariables>
@@ -66,9 +66,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D1C276871C7C4757B5DF8C93"
-            BuildableName = "HuLa.app"
-            BlueprintName = "hula_iOS"
-            ReferencedContainer = "container:hula.xcodeproj">
+            BuildableName = "Hark.app"
+            BlueprintName = "hark_iOS"
+            ReferencedContainer = "container:hark.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D1C276871C7C4757B5DF8C93"
-            BuildableName = "HuLa.app"
-            BlueprintName = "hula_iOS"
-            ReferencedContainer = "container:hula.xcodeproj">
+            BuildableName = "Hark.app"
+            BlueprintName = "hark_iOS"
+            ReferencedContainer = "container:hark.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
