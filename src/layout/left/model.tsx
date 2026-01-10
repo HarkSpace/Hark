@@ -251,6 +251,7 @@ export const CheckUpdate = defineComponent(() => {
       .then((e) => {
         if (!e?.available) {
           checkLoading.value = false
+          window.$message.info(t('message.check_update.no_update_available'))
           return
         }
         newVersion.value = e.version

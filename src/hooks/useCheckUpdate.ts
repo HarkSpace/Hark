@@ -4,12 +4,14 @@ import { useSettingStore } from '@/stores/setting.ts'
 import { MittEnum } from '../enums'
 import { useMitt } from './useMitt'
 import { isMobile } from '@/utils/PlatformConstants'
+import { useI18n } from 'vue-i18n'
 
 /**
  * 检查更新
  */
 export const useCheckUpdate = () => {
   const settingStore = useSettingStore()
+  const { t } = useI18n()
   // 检查更新周期
   const CHECK_UPDATE_TIME = 30 * 60 * 1000
   // 在未登录情况下缩短检查周期
@@ -20,8 +22,9 @@ export const useCheckUpdate = () => {
    * 检查更新
    * @param closeWin 需要关闭的窗口
    * @param initialCheck 是否是初始检查，默认为false。初始检查时只显示强制更新提示，不显示普通更新提示
+   * @param showNoUpdateMessage 是否在没有新版本时显示提示，默认为true
    */
-  const checkUpdate = async (closeWin: string, initialCheck: boolean = false) => {
+  const checkUpdate = async (closeWin: string, initialCheck: boolean = false, showNoUpdateMessage: boolean = true) => {
     if (import.meta.env.DEV) {
       return
     }
@@ -31,6 +34,9 @@ export const useCheckUpdate = () => {
     })
       .then(async (e) => {
         if (!e?.available) {
+          if (showNoUpdateMessage) {
+            window.$message?.info(t('message.check_update.no_update_available'))
+          }
           return
         }
 

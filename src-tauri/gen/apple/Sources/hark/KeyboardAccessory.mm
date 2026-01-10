@@ -13,7 +13,7 @@
 }
 @end
 
-static BOOL HulaPatchTargetView(UIView *targetView) {
+static BOOL HarkPatchTargetView(UIView *targetView) {
     if (!targetView) { return NO; }
 
     // 清空输入助手按钮组，防止出现默认工具栏按钮
@@ -41,7 +41,7 @@ static BOOL HulaPatchTargetView(UIView *targetView) {
     return YES;
 }
 
-static BOOL HulaIsWKContentView(UIView *view) {
+static BOOL HarkIsWKContentView(UIView *view) {
     if (!view) { return NO; }
     // WKWebView 内容视图在不同 iOS 版本中名称可能为 WKContentView/WKScrollContentView 等
     NSString *className = NSStringFromClass(view.class);
@@ -51,23 +51,23 @@ static BOOL HulaIsWKContentView(UIView *view) {
     return NO;
 }
 
-static BOOL HulaPatchViewHierarchy(UIView *view) {
+static BOOL HarkPatchViewHierarchy(UIView *view) {
     if (!view) { return NO; }
     BOOL patched = NO;
 
-    if (HulaIsWKContentView(view)) {
-        patched = HulaPatchTargetView(view) || patched;
+    if (HarkIsWKContentView(view)) {
+        patched = HarkPatchTargetView(view) || patched;
     }
 
     // 继续递归子视图
     for (UIView *sub in view.subviews) {
-        patched = HulaPatchViewHierarchy(sub) || patched;
+        patched = HarkPatchViewHierarchy(sub) || patched;
     }
 
     return patched;
 }
 
-static BOOL HulaPatchAllWindows(void) {
+static BOOL HarkPatchAllWindows(void) {
     BOOL patched = NO;
     if (@available(iOS 13.0, *)) {
         NSSet<UIScene *> *connectedScenes = UIApplication.sharedApplication.connectedScenes;
@@ -76,29 +76,29 @@ static BOOL HulaPatchAllWindows(void) {
             UIWindowScene *windowScene = (UIWindowScene *)scene;
             for (UIWindow *window in windowScene.windows) {
                 if (window.isHidden) { continue; }
-                patched = HulaPatchViewHierarchy(window) || patched;
+                patched = HarkPatchViewHierarchy(window) || patched;
             }
         }
     } else {
         for (UIWindow *window in UIApplication.sharedApplication.windows) {
             if (window.isHidden) { continue; }
-            patched = HulaPatchViewHierarchy(window) || patched;
+            patched = HarkPatchViewHierarchy(window) || patched;
         }
     }
     return patched;
 }
 
-static void HulaTryPatchRepeatedly(int attempt, int maxAttempts, NSTimeInterval interval) {
+static void HarkTryPatchRepeatedly(int attempt, int maxAttempts, NSTimeInterval interval) {
     // 在主线程执行，防止与 UIKit 交互的线程问题
     dispatch_async(dispatch_get_main_queue(), ^{
-        BOOL ok = HulaPatchAllWindows();
+        BOOL ok = HarkPatchAllWindows();
         if (ok || attempt >= maxAttempts) {
             // 成功或达到最大重试次数，停止
             return;
         }
         // 继续下一次尝试
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            HulaTryPatchRepeatedly(attempt + 1, maxAttempts, interval);
+            HarkTryPatchRepeatedly(attempt + 1, maxAttempts, interval);
         });
     });
 }
@@ -108,10 +108,10 @@ extern "C" {
 #endif
 
 // 对外暴露的入口：启动后反复尝试为 WKWebView 内容视图打补丁
-void hula_disable_keyboard_accessory(void) {
+void hark_disable_keyboard_accessory(void) {
     // 最多尝试 100 次，每次间隔 0.1 秒（总计约 10 秒）。
     // 一般在 WebView 创建后很快会被命中。
-    HulaTryPatchRepeatedly(0, 100, 0.1);
+    HarkTryPatchRepeatedly(0, 100, 0.1);
 }
 
 #ifdef __cplusplus

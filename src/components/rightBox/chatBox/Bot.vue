@@ -70,7 +70,7 @@
     <div class="bot-content">
       <n-loading-bar-provider ref="loadingBarRef" :to="false" :container-style="loadingBarContainerStyle">
         <!-- Hark 小管家 3D 模型 -->
-        <HuLaAssistant
+        <HarkAssistant
           v-if="isAssistantView"
           :active="isAssistantView"
           :custom-model="customModelPath"
@@ -108,7 +108,7 @@ import { open } from '@tauri-apps/plugin-dialog'
 import { isDesktop } from '@/utils/PlatformConstants'
 import { useBotStore } from '@/stores/bot'
 import { useAssistantModelPresets, type AssistantModelPreset } from '@/hooks/useAssistantModelPresets'
-import HuLaAssistant from './HuLaAssistant.vue'
+import HarkAssistant from './HarkAssistant.vue'
 
 // 当前语言
 const currentLang = ref<'zh' | 'en'>('zh')

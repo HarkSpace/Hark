@@ -14,6 +14,6 @@ trim_trailing_whitespace = true
 insert_final_newline = false
 trim_trailing_whitespace = false
 
-[tauri-plugin-hula/permissions/schemas/**]
+[tauri-plugin-hark/permissions/schemas/**]
 insert_final_newline = false
 trim_trailing_whitespace = false

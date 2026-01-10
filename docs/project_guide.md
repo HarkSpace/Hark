@@ -394,7 +394,7 @@ Hark/
    # 点击 GitHub 页面右上角的 "Fork" 按钮
    # 然后克隆您的 Fork
    git clone https://github.com/你的用户名/Hark.git
-   cd HuLa
+   cd Hark
    ```
 
 2. **🌿 创建功能分支**
@@ -573,8 +573,8 @@ pnpm run td
 - 💬 **微信群**: 扫描 README 中的二维码加入讨论群
 - 🌟 **GitHub**: [https://github.com/HarkSpace/Hark](https://github.com/HarkSpace/Hark)
 - 🦄 **Gitee**: [https://gitee.com/HarkSpace/Hark](https://gitee.com/HarkSpace/Hark)
-- 📧 **邮箱**: 2439646234@qq.com
-- 🌐 **官网**: [https://hulaspark.com](https://hulaspark.com)
+- 📧 **邮箱**: 1906216170@qq.com
+- 🌐 **官网**: [https://harkspace.cn](https://harkspace.cn)
 
 ---
 
