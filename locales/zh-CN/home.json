@@ -56,7 +56,8 @@
     "tooltip": {
       "copy_account": "复制账号",
       "bound_gitee": "已绑定 Gitee",
-      "bound_github": "已绑定 GitHub"
+      "bound_github": "已绑定 GitHub",
+      "bound_gitcode": "已绑定 GitCode"
     },
     "empty": {
       "no_result": "未找到相关结果",
